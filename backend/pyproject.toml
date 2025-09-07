@@ -1,0 +1,28 @@
+[tool.poetry]
+name = "chtl-lost-builder-api"
+version = "0.1.0"
+description = "Backend API for CHTL: The Lost Builder"
+authors = ["Andrea <andrea.ragalzi.code@gmail.com>"]
+packages = [{ include = "app" }]
+
+[tool.poetry.dependencies]
+python = "^3.12"
+fastapi = "^0.115"
+uvicorn = {extras = ["standard"], version = "^0.35.0"}
+pydantic = {extras = ["email"], version = "^2.11.7"}
+motor = "^3.7"
+python-ulid = "^2.7.0"
+python-dotenv = "^1.0"
+passlib = {extras = ["bcrypt"], version = "^1.7.4"}
+itsdangerous = "^2.2.0"
+pydantic-settings = "^2.10.1"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.0.0"
+httpx = "^0.28.0"
+ruff = "^0.6.0"
+black = "^24.0.0"
+
+[build-system]
+requires = ["poetry-core>=1.6"]
+build-backend = "poetry.core.masonry.api"

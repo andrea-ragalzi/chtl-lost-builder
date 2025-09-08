@@ -1,13 +1,23 @@
-from fastapi import Request
 from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase
-from .settings import get_settings
+from .config import settings
 
-# We'll attach the DB to app.state at startup (see main.py).
-def get_db(request: Request) -> AsyncIOMotorDatabase:
-    """FastAPI dependency that returns the shared Motor database instance."""
-    return request.app.state.db
+_client: AsyncIOMotorClient | None = None
+_db: AsyncIOMotorDatabase | None = None
 
-def create_motor_client() -> AsyncIOMotorClient:
-    """Create a Motor client using resolved settings."""
-    settings = get_settings()
-    return AsyncIOMotorClient(settings.resolved_mongo_uri)
+def get_client() -> AsyncIOMotorClient:
+    global _client
+    if _client is None:
+        _client = AsyncIOMotorClient(settings.MONGO_URL, uuidRepresentation="standard")
+    return _client
+
+def get_db() -> AsyncIOMotorDatabase:
+    global _db
+    if _db is None:
+        _db = get_client()[settings.MONGO_DB]
+    return _db
+
+async def ensure_indexes():
+    db = get_db()
+    await db.users.create_index("email", unique=True, sparse=True)
+    await db.users.create_index("nickname_lc", unique=True, sparse=True)
+    await db.sessions.create_index("expires_at", expireAfterSeconds=0)

@@ -1,29 +1,15 @@
-from typing import Optional
 from motor.motor_asyncio import AsyncIOMotorDatabase
-from datetime import datetime, timedelta, timezone
 
-
-class SessionRepository:
+class SessionRepo:
     def __init__(self, db: AsyncIOMotorDatabase):
-        self.col = db["sessions"]
+        self.col = db.sessions
 
-    async def create(
-        self, session_id: str, user_id: str, ttl_minutes: int, user_agent_hash: str
-    ) -> None:
-        """Create a new session with an absolute expiration."""
-        now = datetime.now(timezone.utc)
-        doc = {
-            "_id": session_id,
-            "user_id": user_id,
-            "created_at": now,
-            "expires_at": now + timedelta(minutes=ttl_minutes),
-            "user_agent_hash": user_agent_hash,
-            "revoked": False,
-        }
+    async def create(self, sid: str, doc: dict):
+        doc["_id"] = sid
         await self.col.insert_one(doc)
 
-    async def get(self, session_id: str) -> Optional[dict]:
-        return await self.col.find_one({"_id": session_id, "revoked": False})
+    async def get(self, sid: str) -> dict | None:
+        return await self.col.find_one({"_id": sid})
 
-    async def revoke(self, session_id: str) -> None:
-        await self.col.update_one({"_id": session_id}, {"$set": {"revoked": True}})
+    async def delete(self, sid: str):
+        await self.col.delete_one({"_id": sid})

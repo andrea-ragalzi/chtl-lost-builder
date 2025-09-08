@@ -1,23 +1,26 @@
-# app/services/user_service.py
-import re
-from fastapi import HTTPException
-from ..repositories.user_repo import UserRepository
-from pymongo.errors import DuplicateKeyError
-
-NICK_RE = re.compile(r"^[A-Za-z0-9_.-]{2,32}$")
+from ..repositories.user_repo import UserRepo
+from ..core.security import hash_password, now_utc
 
 class UserService:
-    def __init__(self, users: UserRepository):
-        self.users = users
+    def __init__(self, repo: UserRepo):
+        self.repo = repo
 
-    async def update_nickname(self, user_id: str, nickname: str) -> None:
-        """Validate nickname and ensure uniqueness (case-insensitive)."""
-        if not NICK_RE.fullmatch(nickname or ""):
-            raise HTTPException(status_code=422, detail="Invalid nickname")
-        if await self.users.is_nickname_taken(nickname, exclude_user_id=user_id):
-            raise HTTPException(status_code=400, detail="Nickname already taken")
-        try:
-            await self.users.update_nickname(user_id, nickname)
-        except DuplicateKeyError:
-            # In case of a race after the pre-check
-            raise HTTPException(status_code=400, detail="Nickname already taken")
+    async def create_user(self, email: str, nickname: str, password: str) -> dict:
+        email_lc = email.lower().strip()
+        nickname = nickname.strip()
+        nickname_lc = nickname.lower()
+        if await self.repo.email_or_nickname_taken(email_lc, nickname_lc):
+            raise ValueError("Email or nickname already in use")
+        doc = {
+            "email": email_lc,
+            "password_hash": hash_password(password),
+            "nickname": nickname,
+            "nickname_lc": nickname_lc,
+            "role": "user",
+            "is_active": True,
+            "email_verified": False,
+            "created_at": now_utc(),
+            "last_login": None,
+        }
+        doc["id"] = await self.repo.insert(doc)
+        return doc

@@ -1,6 +1,6 @@
 import secrets
 from fastapi import Request, Response
-from .settings import get_settings
+from .config import get_settings
 
 
 def new_session_id() -> str:

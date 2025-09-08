@@ -1,11 +1,10 @@
+from pydantic import BaseModel
 from datetime import datetime
-from typing import TypedDict
 
-class SessionModel(TypedDict, total=False):
-    """Mongo document for 'sessions' collection."""
-    _id: str           # session id (string, not ObjectId)
-    user_id: str       # user ObjectId as str
+class SessionModel(BaseModel):
+    id: str | None = None  # session id (cookie value)
+    user_id: str
     created_at: datetime
     expires_at: datetime
-    user_agent_hash: str
-    revoked: bool
+    ua_hash: str | None = None
+    ip: str | None = None

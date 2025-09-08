@@ -1,5 +1,5 @@
 from itsdangerous import URLSafeTimedSerializer, BadSignature, SignatureExpired
-from app.core.settings import get_settings
+from app.core.config import get_settings
 
 def _ser() -> URLSafeTimedSerializer:
     s = get_settings()

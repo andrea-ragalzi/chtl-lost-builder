@@ -1,13 +1,15 @@
 from fastapi import HTTPException, status
 from pymongo.errors import DuplicateKeyError
 from ..repositories.user_repo import UserRepository
-from ..repositories.session_repo import SessionRepository
+from ..repositories.session_repo import SessionRepo
 from ..schemas.admin_schema import AdminUserUpdate, AdminUserCreate
 from ..security.hashing import hash_password
 
+
 class AdminService:
     """Admin-only operations on users with guardrails (no last-admin removal)."""
-    def __init__(self, users: UserRepository, sessions: SessionRepository):
+
+    def __init__(self, users: UserRepository, sessions: SessionRepo):
         self.users = users
         self.sessions = sessions
 
@@ -26,7 +28,9 @@ class AdminService:
                 is_active=payload.is_active,
             )
         except DuplicateKeyError:
-            raise HTTPException(status_code=400, detail="Email or nickname already taken")
+            raise HTTPException(
+                status_code=400, detail="Email or nickname already taken"
+            )
 
         doc = await self.users.get_by_id(user_id)
         if not doc:
@@ -40,8 +44,18 @@ class AdminService:
             "is_active": doc.get("is_active", True),
             "created_at": doc.get("created_at"),
         }
-    async def list_users(self, q: str | None, role: str | None, is_active: bool | None, limit: int, skip: int):
-        return await self.users.list_users(q=q, role=role, is_active=is_active, limit=limit, skip=skip)
+
+    async def list_users(
+        self,
+        q: str | None,
+        role: str | None,
+        is_active: bool | None,
+        limit: int,
+        skip: int,
+    ):
+        return await self.users.list_users(
+            q=q, role=role, is_active=is_active, limit=limit, skip=skip
+        )
 
     async def get_user(self, user_id: str) -> dict:
         doc = await self.users.get_public_by_id(user_id)
@@ -49,7 +63,9 @@ class AdminService:
             raise HTTPException(status_code=404, detail="User not found")
         return doc
 
-    async def patch_user(self, target_user_id: str, payload: AdminUserUpdate, actor_id: str) -> None:
+    async def patch_user(
+        self, target_user_id: str, payload: AdminUserUpdate, actor_id: str
+    ) -> None:
         changed = False
 
         # Role changes with "last admin" protection
@@ -60,7 +76,9 @@ class AdminService:
             if target.get("role") == "admin" and payload.role == "user":
                 admins = await self.users.count_admins()
                 if admins <= 1:
-                    raise HTTPException(status_code=409, detail="Cannot demote the last admin")
+                    raise HTTPException(
+                        status_code=409, detail="Cannot demote the last admin"
+                    )
             ok = await self.users.set_role(target_user_id, payload.role)
             if not ok:
                 raise HTTPException(status_code=404, detail="User not found")
@@ -76,7 +94,9 @@ class AdminService:
 
         if payload.nickname is not None:
             # Uniqueness enforced by DB; try/catch for race
-            if await self.users.is_nickname_taken(payload.nickname, exclude_user_id=target_user_id):
+            if await self.users.is_nickname_taken(
+                payload.nickname, exclude_user_id=target_user_id
+            ):
                 raise HTTPException(status_code=400, detail="Nickname already taken")
             try:
                 await self.users.update_nickname(target_user_id, payload.nickname)
@@ -86,7 +106,11 @@ class AdminService:
 
         if payload.email_verified is not None:
             from bson import ObjectId
-            await self.users.col.update_one({"_id": ObjectId(target_user_id)}, {"$set": {"email_verified": payload.email_verified}})
+
+            await self.users.col.update_one(
+                {"_id": ObjectId(target_user_id)},
+                {"$set": {"email_verified": payload.email_verified}},
+            )
             changed = True
 
         if not changed:
@@ -101,7 +125,9 @@ class AdminService:
         if target.get("role") == "admin":
             admins = await self.users.count_admins()
             if admins <= 1:
-                raise HTTPException(status_code=409, detail="Cannot delete the last admin")
+                raise HTTPException(
+                    status_code=409, detail="Cannot delete the last admin"
+                )
 
         await self.sessions.delete_all_for_user(target_user_id)
         ok = await self.users.delete_user(target_user_id)

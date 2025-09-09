@@ -1,57 +1,54 @@
 # tests/conftest.py
 import os
 import uuid
-import importlib
-import pytest
 import pytest_asyncio
+from httpx import AsyncClient, ASGITransport
 
-from httpx import AsyncClient
-try:
-    # httpx >= 0.27
-    from httpx import ASGITransport
-    HAS_ASGI_TRANSPORT = True
-except Exception:
-    HAS_ASGI_TRANSPORT = False
+from app.core.config import settings
 
-from asgi_lifespan import LifespanManager
+# usa il modulo corretto: mongo.py
+import app.core.mongo as mongo_mod
+from motor.motor_asyncio import AsyncIOMotorClient
 
-@pytest.fixture(scope="session")
-def test_db_name() -> str:
-    return f"chtl_test_{uuid.uuid4().hex}"
 
-@pytest.fixture(scope="session", autouse=True)
-def _setup_env(test_db_name: str):
-    # Use local Mongo for tests (adjust if needed)
-    os.environ["LOCAL_RUN"] = "true"
-    os.environ["MONGO_URI_LOCAL"] = os.environ.get("MONGO_URI_LOCAL", "mongodb://localhost:27017")
-    os.environ["MONGO_DB"] = test_db_name
+@pytest_asyncio.fixture(scope="session", autouse=True)
+async def test_db_name():
+    """
+    Prepara variabili d'ambiente per i test e cleanup finale.
+    Non crea il client Motor qui (evitiamo loop mismatch).
+    """
+    mongo_url = os.getenv("MONGO_TEST_URL") or settings.MONGO_TEST_URL or settings.MONGO_URL
+    base_db = os.getenv("MONGO_TEST_DB") or settings.MONGO_TEST_DB or "chtl_test"
 
-    # Ensure cookies work in tests/dev (not HTTPS)
-    os.environ["COOKIE_SECURE"] = "false"
-    os.environ["COOKIE_SAMESITE"] = "lax"
-    os.environ["COOKIE_DOMAIN"] = ""  # no explicit domain
-    yield
+    name = f"{base_db}_{uuid.uuid4().hex[:8]}"
 
-@pytest.fixture(scope="session")
-def app():
-    # Reload app with fresh settings
-    from app.core.config import get_settings
-    get_settings.cache_clear()
-    import app.main as app_main
-    importlib.reload(app_main)
-    return app_main.app
+    os.environ["MONGO_URL"] = mongo_url
+    os.environ["MONGO_DB"] = name
+    settings.MONGO_URL = mongo_url
+    settings.MONGO_DB = name
 
-@pytest_asyncio.fixture(scope="session")
-async def client(app):
-    # Run lifespan and return a client that keeps cookies between requests
-    if HAS_ASGI_TRANSPORT:
-        transport = ASGITransport(app=app)
-        async with AsyncClient(transport=transport, base_url="http://test") as ac:
-            yield ac
-    else:
-        async with LifespanManager(app):
-            async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as ac:
-                yield ac
-    # Teardown: drop the test DB
-    app.state.client.drop_database(app.state.db.name)
-    app.state.client.close()
+    yield name
+
+    # Cleanup con un NUOVO client (nel loop dei test)
+    client = AsyncIOMotorClient(settings.MONGO_URL, uuidRepresentation="standard")
+    await client.drop_database(name)
+    client.close()
+
+
+@pytest_asyncio.fixture
+async def client(test_db_name):
+    """
+    Client ASGI end-to-end.
+    Reset degli singleton Mongo per forzare la creazione del client
+    all'interno del loop dell'app (evita 'Future attached to a different loop').
+    """
+    # Reset singleton Motor nella tua app
+    mongo_mod._client = None
+    mongo_mod._db = None
+
+    # Importa l'app SOLO ora, dopo aver settato le env e resettato il client
+    from app.main import app
+
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://testserver") as ac:
+        yield ac

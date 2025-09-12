@@ -10,24 +10,29 @@ from ..schemas.user_schema import UserOut
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
+
 def serialize_user(u: dict) -> UserOut:
     return UserOut(
         id=str(u["_id"]) if "_id" in u else u["id"],
         email=u.get("email"),
         nickname=u["nickname"],
-        role=u.get("role","user"),
+        role=u.get("role", "user"),
         is_active=u.get("is_active", True),
         email_verified=u.get("email_verified", False),
     )
+
 
 @router.post("/register", response_model=UserOut, status_code=201)
 async def register(body: RegisterIn, db=Depends(get_db)):
     user_service = UserService(UserRepo(db))
     try:
-        created = await user_service.create_user(body.email, body.nickname, body.password)
+        created = await user_service.create_user(
+            body.email, body.nickname, body.password
+        )
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
     return serialize_user(created)
+
 
 @router.post("/login", response_model=UserOut)
 async def login(body: LoginIn, request: Request, response: Response, db=Depends(get_db)):
@@ -36,17 +41,30 @@ async def login(body: LoginIn, request: Request, response: Response, db=Depends(
         user, sid = await auth.login(body.identifier, body.password, request)
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
+
+    # --- SAMESITE DINAMICO ---
+    # Se la richiesta è same-origin (Swagger su http://localhost:8000), usa LAX (accettato dai browser su HTTP)
+    # Se è cross-origin (SPA su :5173), usa NONE (serve per inviare il cookie cross-site).
+    origin = request.headers.get("origin")
+    host = f"{request.url.scheme}://{request.headers.get('host')}" if request.headers.get("host") else None
+    if settings.COOKIE_SECURE:
+        # In prod su HTTPS: usiamo sempre None + Secure
+        samesite = "none"
+    else:
+        samesite = "lax" if (not origin or origin == host) else "none"
+
     response.set_cookie(
         key=settings.COOKIE_NAME,
         value=sid,
         httponly=True,
-        secure=settings.COOKIE_SECURE,
-        samesite="none" if settings.COOKIE_SECURE else "lax",
-        domain=settings.COOKIE_DOMAIN,
+        secure=settings.COOKIE_SECURE,     # False in dev, True in prod
+        samesite=samesite,                  # 👈 dinamico
+        domain=None,                        # host-only in dev: evita casini con 127.0.0.1 vs localhost
         max_age=settings.SESSION_TTL_HOURS * 3600,
         path="/",
     )
     return serialize_user(user)
+
 
 @router.get("/me", response_model=UserOut)
 async def me(request: Request, db=Depends(get_db)):
@@ -57,9 +75,15 @@ async def me(request: Request, db=Depends(get_db)):
         raise HTTPException(status_code=401, detail="Not authenticated")
     return serialize_user(user)
 
+
 @router.post("/logout", status_code=204)
 async def logout(request: Request, response: Response, db=Depends(get_db)):
     sid = request.cookies.get(settings.COOKIE_NAME)
     await AuthService(UserRepo(db), SessionRepo(db)).logout(sid)
-    response.delete_cookie(settings.COOKIE_NAME, domain=settings.COOKIE_DOMAIN, path="/")
+    response.delete_cookie(settings.COOKIE_NAME, domain=None, path="/")
     return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
+@router.get("/debug/cookies")
+async def debug_cookies(request: Request):
+    return {"cookies": dict(request.cookies)}

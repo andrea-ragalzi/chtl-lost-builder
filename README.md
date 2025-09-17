@@ -16,8 +16,8 @@
 ## 🚧 Roadmap
 - [ ] **Backend**
   - [X] Setup FastAPI + MongoDB (Docker Compose)
-  - [ ] Character model & schema validation
-  - [ ] CRUD endpoints (create, read, update, delete)
+  - [X] Character model & schema validation
+  - [X] CRUD endpoints (create, read, update, delete)
   - [ ] Shareable public link (slug)
   - [ ] Rules validation engine (attributes, skills, merits, contracts)
   - [ ] Derived stats calculation

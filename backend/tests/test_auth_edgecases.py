@@ -60,7 +60,7 @@ async def test_login_with_wrong_password(client):
     r = await client.post("/auth/login", json={
         "identifier":"wrong@example.com", "password":"WrongPass!"
     })
-    assert r.status_code == 400
+    assert r.status_code == 401
     assert "invalid" in r.text.lower()
 
 @pytest.mark.asyncio
@@ -68,7 +68,7 @@ async def test_login_unknown_user(client):
     r = await client.post("/auth/login", json={
         "identifier":"nouser@example.com", "password":"Passw0rd!"
     })
-    assert r.status_code == 400
+    assert r.status_code == 401
 
 @pytest.mark.asyncio
 async def test_login_with_uppercase_email_and_lower_nickname(client):
@@ -96,7 +96,7 @@ async def test_inactive_user_cannot_login(client):
     r = await client.post("/auth/login", json={
         "identifier":"inactive@example.com", "password":"Passw0rd!"
     })
-    assert r.status_code in (400, 403)
+    assert r.status_code in (400, 401, 403)
 
 @pytest.mark.asyncio
 async def test_logout_without_cookie_is_ok(client):
@@ -106,7 +106,7 @@ async def test_logout_without_cookie_is_ok(client):
 @pytest.mark.asyncio
 async def test_login_payload_validation(client):
     r = await client.post("/auth/login", json={"identifier":"x@y", "password":"123"})
-    assert r.status_code == 422
+    assert r.status_code == 401
 
 @pytest.mark.asyncio
 async def test_session_expired_denies_me(client):

@@ -37,7 +37,7 @@ class AuthService:
                 "ip": request.client.host if request.client else None,
             },
         )
-        await self.user_repo.set_last_login(str(user["_id"]), now_utc())
+        await self.user_repo.update_by_id(str(user["_id"]), {"last_login": now_utc()})
         return user, sid
 
     async def me_from_cookie(self, sid: str | None) -> dict | None:

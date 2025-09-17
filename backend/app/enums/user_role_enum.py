@@ -1,6 +1,5 @@
-# app/enums/roles.py
-from typing import Final
+from enum import Enum
 
-ROLES: Final[tuple[str, ...]] = ("user", "admin")
-DEFAULT_ROLE: Final[str] = "user"
-ADMIN_ROLE: Final[str] = "admin"
+class UserRole(str, Enum):
+    USER = "user"
+    ADMIN = "admin"

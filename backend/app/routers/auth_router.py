@@ -1,89 +1,109 @@
+from typing import Literal, Union
 from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
-from ..core.mongo import get_db
 from ..core.config import settings
+from ..core.mongo import get_db  # must expose db in app.state.db
 from ..repositories.user_repo import UserRepo
 from ..repositories.session_repo import SessionRepo
 from ..services.user_service import UserService
 from ..services.auth_service import AuthService
-from ..schemas.auth_schema import RegisterIn, LoginIn
-from ..schemas.user_schema import UserOut
+from ..schemas.auth_schema import RegisterReq, LoginReq
+from ..schemas.user_schema import UserRes
+from ..models.user_model import UserModel
+from ..core.utils import doc_to_model
+
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
 
-def serialize_user(u: dict) -> UserOut:
-    return UserOut(
-        id=str(u["_id"]) if "_id" in u else u["id"],
-        email=u.get("email"),
-        nickname=u["nickname"],
-        role=u.get("role", "user"),
-        is_active=u.get("is_active", True),
-        email_verified=u.get("email_verified", False),
-    )
+# ---------- dependencies ----------
+def get_user_service(db=Depends(get_db)) -> UserService:
+    return UserService(UserRepo(db))
 
 
-@router.post("/register", response_model=UserOut, status_code=201)
-async def register(body: RegisterIn, db=Depends(get_db)):
-    user_service = UserService(UserRepo(db))
-    try:
-        created = await user_service.create_user(
-            body.email, body.nickname, body.password
-        )
-    except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
-    return serialize_user(created)
+def get_auth_service(db=Depends(get_db)) -> AuthService:
+    return AuthService(UserRepo(db), SessionRepo(db))
 
 
-@router.post("/login", response_model=UserOut)
-async def login(body: LoginIn, request: Request, response: Response, db=Depends(get_db)):
-    auth = AuthService(UserRepo(db), SessionRepo(db))
-    try:
-        user, sid = await auth.login(body.identifier, body.password, request)
-    except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+# ---------- helpers ----------
+def to_user_res(user: Union[dict, UserModel]) -> UserRes:
+    if isinstance(user, UserModel):
+        return UserRes.from_model(user)
+    model = doc_to_model(UserModel, user)
+    if not model:
+        raise HTTPException(status_code=500, detail="User conversion failed")
+    return UserRes.from_model(model)
 
-    # --- SAMESITE DINAMICO ---
-    # Se la richiesta è same-origin (Swagger su http://localhost:8000), usa LAX (accettato dai browser su HTTP)
-    # Se è cross-origin (SPA su :5173), usa NONE (serve per inviare il cookie cross-site).
-    origin = request.headers.get("origin")
-    host = f"{request.url.scheme}://{request.headers.get('host')}" if request.headers.get("host") else None
+
+def compute_samesite(request: Request) -> Literal["lax", "strict", "none"]:
     if settings.COOKIE_SECURE:
-        # In prod su HTTPS: usiamo sempre None + Secure
-        samesite = "none"
-    else:
-        samesite = "lax" if (not origin or origin == host) else "none"
+        return "none"
+    origin = request.headers.get("origin")
+    host_header = request.headers.get("host")
+    host_origin = f"{request.url.scheme}://{host_header}" if host_header else None
+    return "lax" if (not origin or origin == host_origin) else "none"
+
+
+# ---------- routes ----------
+@router.post("/register", response_model=UserRes, status_code=status.HTTP_201_CREATED)
+async def register(
+    payload: RegisterReq, user_service: UserService = Depends(get_user_service)
+):
+    try:
+        user = await user_service.create_user(
+            email=payload.email,
+            nickname=payload.nickname,
+            password=payload.password,
+        )
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc))
+    return to_user_res(user)
+
+
+@router.post("/login", response_model=UserRes)
+async def login(
+    payload: LoginReq,
+    request: Request,
+    response: Response,
+    auth_service: AuthService = Depends(get_auth_service),
+):
+    try:
+        user_doc, session_id = await auth_service.login(
+            payload.identifier, payload.password, request
+        )
+    except ValueError as exc:
+        raise HTTPException(status_code=401, detail=str(exc))
 
     response.set_cookie(
         key=settings.COOKIE_NAME,
-        value=sid,
+        value=session_id,
         httponly=True,
-        secure=settings.COOKIE_SECURE,     # False in dev, True in prod
-        samesite=samesite,                  # 👈 dinamico
-        domain=None,                        # host-only in dev: evita casini con 127.0.0.1 vs localhost
+        secure=settings.COOKIE_SECURE,
+        samesite=compute_samesite(request),
         max_age=settings.SESSION_TTL_HOURS * 3600,
         path="/",
+        domain=None,
     )
-    return serialize_user(user)
+    return to_user_res(user_doc)
 
 
-@router.get("/me", response_model=UserOut)
-async def me(request: Request, db=Depends(get_db)):
-    sid = request.cookies.get(settings.COOKIE_NAME)
-    auth = AuthService(UserRepo(db), SessionRepo(db))
-    user = await auth.me_from_cookie(sid)
-    if not user:
+@router.get("/me", response_model=UserRes)
+async def me(
+    request: Request,
+    auth_service: AuthService = Depends(get_auth_service),
+):
+    session_id = request.cookies.get(settings.COOKIE_NAME)
+    user_doc = await auth_service.me_from_cookie(session_id)
+    if not user_doc:
         raise HTTPException(status_code=401, detail="Not authenticated")
-    return serialize_user(user)
+    return to_user_res(user_doc)
 
 
-@router.post("/logout", status_code=204)
-async def logout(request: Request, response: Response, db=Depends(get_db)):
-    sid = request.cookies.get(settings.COOKIE_NAME)
-    await AuthService(UserRepo(db), SessionRepo(db)).logout(sid)
+@router.post("/logout", status_code=status.HTTP_204_NO_CONTENT)
+async def logout(
+    request: Request,
+    response: Response,
+    auth_service: AuthService = Depends(get_auth_service),
+):
+    session_id = request.cookies.get(settings.COOKIE_NAME)
+    await auth_service.logout(session_id)
     response.delete_cookie(settings.COOKIE_NAME, domain=None, path="/")
-    return Response(status_code=status.HTTP_204_NO_CONTENT)
-
-
-@router.get("/debug/cookies")
-async def debug_cookies(request: Request):
-    return {"cookies": dict(request.cookies)}

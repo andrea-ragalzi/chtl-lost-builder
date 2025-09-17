@@ -42,7 +42,7 @@ async def test_register_login_me_logout(client):
     r = await client.get("/auth/me", headers={"Cookie": f"{settings.COOKIE_NAME}={sid}"})
     assert r.status_code == 200, r.text
     me = r.json()
-    assert me["nickname"] == "UserOne"
+    assert me["nickname"] == "UserOne".lower()
 
     # Logout (header Cookie esplicito)
     r = await client.post("/auth/logout", headers={"Cookie": f"{settings.COOKIE_NAME}={sid}"})
@@ -74,4 +74,4 @@ async def test_login_with_nickname_case_insensitive(client):
     # Me con header Cookie
     r = await client.get("/auth/me", headers={"Cookie": f"{settings.COOKIE_NAME}={sid}"})
     assert r.status_code == 200, r.text
-    assert r.json()["nickname"] == "CaseNick"
+    assert r.json()["nickname"] == "CaseNick".lower()

@@ -1,23 +1,51 @@
-# app/main.py
-from fastapi import FastAPI
+from contextlib import asynccontextmanager
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.openapi.utils import get_openapi
+from starlette.responses import RedirectResponse
 from .core.config import settings
 from .core.mongo import ensure_indexes
-from .routers import auth_router, health_router  # + eventuali altri
-from starlette.responses import RedirectResponse
+from .routers import auth_router, health_router, user_router
 
 
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    await ensure_indexes()
+    yield
+
+
+# Istanzia UNA sola app
 app = FastAPI(
     title="CHTL API",
     version="0.1.0",
-    servers=[{"url": "http://localhost:8000"}],  # Swagger Try it out usa questo host
+    servers=[{"url": "http://localhost:8000"}],
     swagger_ui_parameters={"persistAuthorization": True},
+    lifespan=lifespan,
+)
+
+# CORS (gestisce anche OPTIONS)
+allowed_origins = getattr(
+    settings,
+    "cors_origins",
+    [
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+    ],
+)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=allowed_origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 
+# Redirect docs 127.0.0.1 -> localhost (per Swagger "Try it out")
 @app.middleware("http")
-async def redirect_docs_host(request, call_next):
+async def redirect_docs_host(request: Request, call_next):
     if request.url.path in ("/docs", "/openapi.json") and request.headers.get(
         "host", ""
     ).startswith("127.0.0.1"):
@@ -26,6 +54,7 @@ async def redirect_docs_host(request, call_next):
     return await call_next(request)
 
 
+# OpenAPI con cookieAuth
 def custom_openapi():
     if app.openapi_schema:
         return app.openapi_schema
@@ -42,7 +71,7 @@ def custom_openapi():
         "in": "cookie",
         "name": settings.COOKIE_NAME,
     }
-    # Opzionale: applica cookieAuth a tutte le path (puoi toglierlo per rotte pubbliche)
+    # Applica cookieAuth di default (le rotte pubbliche si possono escludere con dependencies)
     for path in openapi_schema["paths"].values():
         for method in path.values():
             method.setdefault("security", [{"cookieAuth": []}])
@@ -52,19 +81,7 @@ def custom_openapi():
 
 app.openapi = custom_openapi
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=getattr(settings, "cors_origins", []),
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-
-@app.on_event("startup")
-async def startup():
-    await ensure_indexes()
-
-
+# Routers
 app.include_router(health_router.router)
 app.include_router(auth_router.router)
+app.include_router(user_router.router)

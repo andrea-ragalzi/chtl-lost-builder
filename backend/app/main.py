@@ -1,11 +1,11 @@
 from contextlib import asynccontextmanager
+from app.core.mongo import ensure_indexes
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.openapi.utils import get_openapi
 from starlette.responses import RedirectResponse
 from .core.config import settings
-from .core.mongo import ensure_indexes
-from .routers import auth_router, health_router, user_router
+from .routers import auth_router, health_router, user_router, character_router
 
 
 @asynccontextmanager
@@ -85,3 +85,4 @@ app.openapi = custom_openapi
 app.include_router(health_router.router)
 app.include_router(auth_router.router)
 app.include_router(user_router.router)
+app.include_router(character_router.router)

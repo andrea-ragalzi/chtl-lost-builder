@@ -21,3 +21,10 @@ async def ensure_indexes():
     await db.users.create_index("email", unique=True, sparse=True)
     await db.users.create_index("nickname_lc", unique=True, sparse=True)
     await db.sessions.create_index("expires_at", expireAfterSeconds=0)
+
+async def close_mongo():
+    global _client, _db
+    if _client:
+        _client.close()
+    _client = None
+    _db = None

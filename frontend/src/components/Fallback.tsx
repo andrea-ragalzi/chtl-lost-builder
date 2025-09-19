@@ -1,0 +1,1 @@
+export const Fallback = () => <div style={{ padding: 24 }}>Loading…</div>;

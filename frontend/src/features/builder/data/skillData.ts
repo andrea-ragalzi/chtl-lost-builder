@@ -1,0 +1,32 @@
+export const SKILL_GROUPS = {
+    mental: [
+        'Academics',
+        'Computer',
+        'Crafts',
+        'Investigation',
+        'Medicine',
+        'Occult',
+        'Politics',
+        'Science',
+    ],
+    physical: [
+        'Athletics',
+        'Brawl',
+        'Drive',
+        'Firearms',
+        'Larceny',
+        'Stealth',
+        'Survival',
+        'Weaponry',
+    ],
+    social: [
+        'Animal Ken',
+        'Empathy',
+        'Expression',
+        'Intimidation',
+        'Persuasion',
+        'Socialize',
+        'Streetwise',
+        'Subterfuge',
+    ],
+};

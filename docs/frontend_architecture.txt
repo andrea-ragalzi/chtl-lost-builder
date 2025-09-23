@@ -1,0 +1,39 @@
+src/
+|
++-- app/                  # (Servizio di Sistema) Shell, Configurazione e Router
+|   +-- routes/           # Mappatura delle rotte (Router.tsx)
+|   +-- providers/        # StoreProvider, AuthProvider, MantineProvider
+|   +-- App.tsx           # Componente Shell principale (dove tutto viene avvolto)
+|
++-- pages/                # (Composizione) Le Pagine che Aggregano le Features
+|   +-- BuilderPage.tsx   # Aggrega tutte le features in 'features/builder/'
+|   +-- LoginPage.tsx
+|   +-- SheetPage.tsx     # Aggrega le features in 'features/sheet/'
+|
++-- features/             # (Logica di Business ISOLATA) Organizzata per Contesto
+|   +-- auth/             # Contesto: Autenticazione e Profilo Utente
+|   |   +-- login-form/
+|   |   +-- user-settings/
+|   |
+|   +-- builder/          # Contesto: Flusso di Creazione del Personaggio
+|   |   +-- builder-flow/      # Feature: Logica dello Stepper (avanzamento, validazione)
+|   |   +-- kith-selection/    # Feature: Scelta Kith/Seeming/Mantle
+|   |   +-- attribute-setter/  # Feature: Assegnazione priorità Attributi (5/4/3)
+|   |   +-- skill-setter/      # Feature: Assegnazione priorità Skill (4/3/2)
+|   |   +-- freebie-allocation/# Feature: Spesa finale dei 15 Punti Liberi
+|   |
+|   +-- sheet/            # Contesto: Visualizzazione Scheda Finale
+|   |   +-- stat-block/        # Feature: Componente Stat Block
+|   |   +-- merit-list/        # Feature: Componente lista Meriti
+|
++-- shared/               # (Servizi Globali e Stato Centrale) Accessibile Ovunque
+|   +-- components/       # Componenti UI Mantine generici (Button, Modal, Input, Layouts)
+|   +-- hooks/            # useAppDispatch, useAppSelector, useDebounce
+|   +-- types/            # CharacterModel, CreationStep, KithData (Tipi Centrali)
+|   +-- stores/           # REDUX SLICES CENTRALIZZATI (Il tuo stato globale)
+|   |   +-- characterSlice.ts # Slice che gestisce il CharacterModel
+|   |   +-- authSlice.ts      # Slice che gestisce lo stato di login
+|   +-- api/              # Istanze API, Client Axios
+|   +-- utils/            # Funzioni pure (formattazione, calcoli generici)
+|
+main.tsx                  # Punto di Mount di ReactDOM

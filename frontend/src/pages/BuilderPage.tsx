@@ -3,12 +3,12 @@ import { Box, Title, Text, Button } from '@mantine/core';
 import { SeemingSelection } from '../features/builder/components/SeemingSelection';
 import { KithSelection } from '../features/builder/components/KithSelection';
 import { ConceptSelection } from '../features/builder/components/ConceptSelection';
-import { DebugState } from '../features/builder/components/DebugState';
 import { AttributeSelection } from '../features/builder/components/AttributeSelection';
 import { SkillSelection } from '../features/builder/components/SkillSelection';
 import { SpecialtySelection } from '../features/builder/components/SpecialtySelection';
 import { MeritSelection } from '../features/builder/components/MeritSelection';
 import { useNavigate } from 'react-router-dom';
+import { DebugState } from '../shared/components/DebugState';
 
 const BuilderPage = () => {
     const navigate = useNavigate();
@@ -19,13 +19,13 @@ const BuilderPage = () => {
             <Text c="dimmed" mb="xl">
                 Inizia il tuo viaggio creando il tuo personaggio.
             </Text>
-            <ConceptSelection />
+            {/* <ConceptSelection /> */}
             <AttributeSelection />
-            <SkillSelection />
-            <SpecialtySelection />
-            <SeemingSelection />
-            <KithSelection />
-            <MeritSelection />
+            {/* <SkillSelection /> */}
+            {/* <SpecialtySelection /> */}
+            {/* <SeemingSelection /> */}
+            {/* <KithSelection /> */}
+            {/* <MeritSelection /> */}
 
             <Button
                 fullWidth

@@ -1,7 +1,7 @@
 import { Box, Title, Text, Stack, Group, Paper, ThemeIcon, Switch } from '@mantine/core';
 import { useAppDispatch, useAppSelector } from '../../../shared/hooks/hooks';
-import { setMeritRating } from '../stores/meritSlice';
-import { meritData, type Merit } from '../data/meritData';
+import { setMeritRating } from '../../../shared/stores/meritSlice';
+import { meritData, type Merit } from '../../../shared/data/meritData';
 import { IconCircle, IconCircleFilled } from '@tabler/icons-react';
 import { useMemo } from 'react';
 
@@ -63,7 +63,7 @@ const MeritRow = ({ merit, currentRating, onRatingChange, canAfford }: { merit: 
 
 export const MeritSelection = () => {
     const dispatch = useAppDispatch();
-    const selectedMerits = useAppSelector((state) => state.builder.merits.selected);
+    const selectedMerits = useAppSelector((state) => state.character.merits.selected);
 
     const totalPointsSpent = useMemo(() => {
         return Object.entries(selectedMerits).reduce((sum, [name, rating]) => {

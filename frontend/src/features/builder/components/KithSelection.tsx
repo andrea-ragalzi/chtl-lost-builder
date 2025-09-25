@@ -1,14 +1,14 @@
 import { Box, Text, Card, Image, Title, Stack, Blockquote, List } from '@mantine/core';
 import { useAppDispatch, useAppSelector } from '../../../shared/hooks/hooks';
-import { setKith } from '../stores/kithSlice';
+import { setKith } from '../../../shared/stores/kithSlice';
 import { Carousel } from '@mantine/carousel';
 import '@mantine/carousel/styles.css';
 import { useEffect } from 'react';
-import { kithData } from '../data/kithData';
+import { kithData } from '../../../shared/data/kithData';
 
 export const KithSelection = () => {
     const dispatch = useAppDispatch();
-    const selectedKith = useAppSelector((state) => state.builder.kith.selected);
+    const selectedKith = useAppSelector((state) => state.character.kith.selected);
 
     useEffect(() => {
         if (!selectedKith && kithData.length > 0) {

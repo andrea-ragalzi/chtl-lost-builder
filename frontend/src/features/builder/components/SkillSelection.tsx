@@ -1,7 +1,7 @@
 import { Box, Title, Text, Stack, Button, Group, SimpleGrid, Paper, ActionIcon, Divider } from '@mantine/core';
 import { useAppDispatch, useAppSelector } from '../../../shared/hooks/hooks';
-import { setSkillPoints, setSkillPriority } from '../stores/skillSlice';
-import { SKILL_GROUPS } from '../data/skillData';
+import { setSkillPoints, setSkillPriority } from '../../../shared/stores/skillSlice';
+import { SKILL_GROUPS } from '../../../shared/data/skillData';
 import { IconPlus, IconMinus } from '@tabler/icons-react';
 import { useMemo } from 'react';
 
@@ -27,7 +27,7 @@ const SkillCounter = ({ name, value, onUpdate, canIncrease }: { name: string, va
 
 export const SkillSelection = () => {
     const dispatch = useAppDispatch();
-    const { priorities: skillPointDistribution, points: skillPoints } = useAppSelector((state) => state.builder.skills);
+    const { priorities: skillPointDistribution, points: skillPoints } = useAppSelector((state) => state.character.skills);
 
     const handlePriorityChange = (group: keyof typeof SKILL_GROUPS, value: number) => {
         dispatch(setSkillPriority({ group, value }));

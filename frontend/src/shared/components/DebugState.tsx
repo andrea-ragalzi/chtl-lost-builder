@@ -1,11 +1,11 @@
 import { Paper, Title, Code, Collapse, Group, ActionIcon } from '@mantine/core';
-import { useAppSelector } from '../../../shared/hooks/hooks';
+import { useAppSelector } from '../hooks/hooks';
 import { useDisclosure } from '@mantine/hooks';
 import { IconChevronDown, IconChevronUp } from '@tabler/icons-react';
 
 export const DebugState = () => {
     const [isOpen, { toggle }] = useDisclosure(true);
-    const builderState = useAppSelector((state) => state.builder);
+    const builderState = useAppSelector((state) => state.character);
 
     return (
         <Paper

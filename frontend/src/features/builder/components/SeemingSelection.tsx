@@ -1,14 +1,14 @@
 import { useEffect } from 'react';
 import { Box, Text, Card, Image, Title, Blockquote, Stack, List } from '@mantine/core';
 import { useAppDispatch, useAppSelector } from '../../../shared/hooks/hooks';
-import { setSeeming } from '../stores/seemingSlice';
+import { setSeeming } from '../../../shared/stores/seemingSlice';
 import { Carousel } from '@mantine/carousel';
 import '@mantine/carousel/styles.css';
-import { seemingData } from '../data/seemingData'; // Importa i dati dal nuovo file
+import { seemingData } from '../../../shared/data/seemingData'; // Importa i dati dal nuovo file
 
 export const SeemingSelection = () => {
     const dispatch = useAppDispatch();
-    const currentSeeming = useAppSelector((state) => state.builder.seeming.selected);
+    const currentSeeming = useAppSelector((state) => state.character.seeming.selected);
 
     useEffect(() => {
         if (!currentSeeming && seemingData.length > 0) {
@@ -58,10 +58,10 @@ export const SeemingSelection = () => {
                 onSlideChange={handleCarouselChange}
                 initialSlide={initialSlideIndex}
                 emblaOptions={{
-        loop: true,
-        dragFree: false,
-        align: 'center'
-      }}
+                    loop: true,
+                    dragFree: false,
+                    align: 'center'
+                }}
             >
                 {slides}
             </Carousel>

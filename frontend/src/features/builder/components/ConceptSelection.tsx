@@ -1,11 +1,11 @@
 import { Box, Title, Text, Stack, TextInput } from '@mantine/core';
 import { useAppDispatch, useAppSelector } from '../../../shared/hooks/hooks';
-import { updateConcept } from '../stores/conceptSlice';
+import { updateConcept } from '../../../shared/stores/conceptSlice';
 import { useDebouncedCallback } from '@mantine/hooks';
 
 export const ConceptSelection = () => {
     const dispatch = useAppDispatch();
-    const conceptState = useAppSelector((state) => state.builder.concept);
+    const conceptState = useAppSelector((state) => state.character.concept);
 
     // Debounced dispatch to avoid updating the store on every keystroke
     const debouncedDispatch = useDebouncedCallback((payload: { name: string, value: string }) => {

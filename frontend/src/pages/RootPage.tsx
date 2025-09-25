@@ -14,7 +14,7 @@ const RootLayout = () => {
             <AppShell.Header>
                 <Group h="100%" px="md">
                     <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
-                    <Title order={3}>Changeling: The Lost - Builder</Title>
+                    <Title order={3}>Changeling: The Lost Builder</Title>
                 </Group>
             </AppShell.Header>
 

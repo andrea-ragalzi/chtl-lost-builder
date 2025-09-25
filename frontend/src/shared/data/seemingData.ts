@@ -1,4 +1,4 @@
-import type { SeemingDetails } from "../types/seemingType";
+import type { SeemingDetails } from "../../features/builder/types/seemingType";
 
 export const seemingData: SeemingDetails[] = [
     {

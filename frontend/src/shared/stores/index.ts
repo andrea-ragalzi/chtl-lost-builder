@@ -7,7 +7,7 @@ import skillReducer from './skillSlice';
 import specialtyReducer from './specialtySlice';
 import meritSlice from './meritSlice';
 
-const builderReducer = combineReducers({
+const characterReducer = combineReducers({
     concept: conceptReducer,
     attributes: attributeSlice,
     skills: skillReducer,
@@ -17,4 +17,4 @@ const builderReducer = combineReducers({
     merits: meritSlice,
 });
 
-export default builderReducer;
+export default characterReducer;

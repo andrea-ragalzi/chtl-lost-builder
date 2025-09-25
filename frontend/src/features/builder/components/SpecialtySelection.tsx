@@ -1,13 +1,13 @@
 import { Box, Title, Text, Stack, TextInput, Paper } from '@mantine/core';
 import { useAppDispatch, useAppSelector } from '../../../shared/hooks/hooks';
-import { setSpecialty } from '../stores/specialtySlice';
+import { setSpecialty } from '../../../shared/stores/specialtySlice';
 import { useMemo } from 'react';
 import { useDebouncedCallback } from '@mantine/hooks';
 
 export const SpecialtySelection = () => {
     const dispatch = useAppDispatch();
-    const skillPoints = useAppSelector((state) => state.builder.skills.points);
-    const specialties = useAppSelector((state) => state.builder.specialties.specialties);
+    const skillPoints = useAppSelector((state) => state.character.skills.points);
+    const specialties = useAppSelector((state) => state.character.specialties.specialties);
 
     // Find all skills with a rating of 3
     const eligibleSkills = useMemo(() => {

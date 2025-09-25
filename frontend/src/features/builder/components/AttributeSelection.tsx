@@ -1,22 +1,55 @@
-import { Box, Title, Text, Stack, Button, Group, SimpleGrid, Paper } from '@mantine/core';
+import { Box, Title, Text, Stack, Button, Group, SimpleGrid, Paper, ActionIcon } from '@mantine/core';
 import { useAppDispatch, useAppSelector } from '../../../shared/hooks/hooks';
-import { setPriority } from '../stores/attributeSlice';
+import { setPriority, updateAttribute } from '../../../shared/stores/attributeSlice';
+import { IconPlus, IconMinus } from '@tabler/icons-react';
 
 const ATTRIBUTE_GROUPS = {
-    mental: ['Intelligence', 'Wits', 'Resolve'],
-    physical: ['Strength', 'Dexterity', 'Stamina'],
-    social: ['Presence', 'Manipulation', 'Composure'],
+    mental: ['intelligence', 'wits', 'resolve'],
+    physical: ['strength', 'dexterity', 'stamina'],
+    social: ['presence', 'manipulation', 'composure']
 };
 
-const PRIORITIES = [4, 3, 2];
+const PRIORITIES = [5, 4, 3];
 
 export const AttributeSelection = () => {
     const dispatch = useAppDispatch();
-    const priorities = useAppSelector((state) => state.builder.attributes.priorities);
-
+    const priorities = useAppSelector((state) => state.character.attributes.priorities);
+    const individual = useAppSelector((state) => state.character.attributes.individual);
 
     const handleSetPriority = (group: keyof typeof ATTRIBUTE_GROUPS, value: number) => {
         dispatch(setPriority({ group, value }));
+    };
+
+    const handleAttributeChange = (attribute: string, delta: number) => {
+        const currentValue = individual[attribute as keyof typeof individual];
+        const group = Object.keys(ATTRIBUTE_GROUPS).find(key =>
+            ATTRIBUTE_GROUPS[key as keyof typeof ATTRIBUTE_GROUPS].includes(attribute)
+        ) as keyof typeof ATTRIBUTE_GROUPS;
+
+        const remaining = getPointsRemaining(group);
+
+        if (delta > 0 && remaining <= 0) {
+            return; // Non incrementare se non ci sono punti rimanenti
+        }
+
+        if (delta < 0 && currentValue <= 1) {
+            return; // Non decrementare sotto 1
+        }
+
+        const newValue = Math.max(1, currentValue + delta);
+        dispatch(updateAttribute({ attribute: attribute as keyof typeof individual, value: newValue }));
+    };
+
+    const getGroupTotal = (group: keyof typeof ATTRIBUTE_GROUPS) => {
+        const attrs = ATTRIBUTE_GROUPS[group];
+        // Corrected: Sum the bonus points (value - 1)
+        return attrs.reduce((sum, attr) => sum + (individual[attr.toLowerCase() as keyof typeof individual] - 1), 0);
+    };
+
+    const getPointsRemaining = (group: keyof typeof ATTRIBUTE_GROUPS) => {
+        const budget = priorities[group];
+        const used = getGroupTotal(group);
+        return budget - used;
     };
 
     return (
@@ -24,12 +57,12 @@ export const AttributeSelection = () => {
             <Stack align="center" mb="xl">
                 <Title order={2}>2. Assign Your Attributes</Title>
                 <Text c="dimmed" ta="center" maw={600}>
-                    Attributes represent your character's innate qualities: their mind, body, and social skills. Assign points to the three groups according to the instructions.
+                    Attributes represent your character's innate qualities: their mind, body, and social skills. Assign priorities to groups, then distribute points within each group.
                 </Text>
             </Stack>
 
             <Paper withBorder p="md" mb="xl">
-                <Text ta="center" fw={500}>Assign the values 4, 3, 2 to the Mental, Physical, and Social groups.</Text>
+                <Text ta="center" fw={500}>Assign the values 5, 4, 3 to the Mental, Physical, and Social groups, then distribute points within each group.</Text>
             </Paper>
 
             <Stack gap="lg" mb="xl">
@@ -44,7 +77,6 @@ export const AttributeSelection = () => {
                                         key={value}
                                         variant={isSelected ? 'filled' : 'outline'}
                                         onClick={() => handleSetPriority(group as keyof typeof ATTRIBUTE_GROUPS, value)}
-                                        // The 'disabled' prop has been removed to allow swapping.
                                         size="xs"
                                     >
                                         {value}
@@ -57,22 +89,49 @@ export const AttributeSelection = () => {
             </Stack>
 
             <SimpleGrid cols={{ base: 1, sm: 3 }} spacing="lg">
-                {Object.entries(ATTRIBUTE_GROUPS).map(([groupKey, attrs]) => (
-                    <Paper withBorder p="md" key={groupKey}>
-                        <Title order={4} tt="capitalize">{groupKey}</Title>
-                        <Stack mt="md">
-                            {attrs.map(attr => (
-                                <Group key={attr} justify="space-between">
-                                    <Text>{attr}</Text>
-                                    <Text fw={700}>{priorities[groupKey as keyof typeof priorities]}</Text>
-                                </Group>
-                            ))}
-                        </Stack>
-                    </Paper>
-                ))}
+                {Object.entries(ATTRIBUTE_GROUPS).map(([groupKey, attrs]) => {
+                    const group = groupKey as keyof typeof ATTRIBUTE_GROUPS;
+                    const budget = priorities[group];
+                    const used = getGroupTotal(group);
+                    const remaining = getPointsRemaining(group);
+                    return (
+                        <Paper withBorder p="md" key={groupKey}>
+                            <Title order={4} tt="capitalize">{groupKey} (Budget: {budget})</Title>
+                            <Text size="sm" c={remaining < 0 ? 'red' : 'green'}>Used: {used} / Remaining: {remaining}</Text>
+                            <Stack mt="md">
+                                {attrs.map(attr => {
+                                    const attrKey = attr.toLowerCase() as keyof typeof individual;
+                                    const value = individual[attrKey];
+                                    const canIncrement = remaining > 0;
+                                    const canDecrement = value > 1;
+                                    return (
+                                        <Group key={attr} justify="space-between">
+                                            <Text>{attr}</Text>
+                                            <Group gap="xs">
+                                                <ActionIcon
+                                                    size="sm"
+                                                    onClick={() => canDecrement && handleAttributeChange(attr, -1)}
+                                                    disabled={!canDecrement}
+                                                >
+                                                    <IconMinus size={16} />
+                                                </ActionIcon>
+                                                <Text fw={700} style={{ minWidth: 20, textAlign: 'center' }}>{value}</Text>
+                                                <ActionIcon
+                                                    size="sm"
+                                                    onClick={() => canIncrement && handleAttributeChange(attr, 1)}
+                                                    disabled={!canIncrement}
+                                                >
+                                                    <IconPlus size={16} />
+                                                </ActionIcon>
+                                            </Group>
+                                        </Group>
+                                    );
+                                })}
+                            </Stack>
+                        </Paper>
+                    );
+                })}
             </SimpleGrid>
-
-
         </Box>
     );
 };

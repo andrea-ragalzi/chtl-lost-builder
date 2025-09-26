@@ -7,6 +7,7 @@ import skillReducer from './skillSlice';
 import specialtyReducer from './specialtySlice';
 import meritSlice from './meritSlice';
 import characterDetailsSlice from './characterDetailsSlice';
+import healthTrackReducer from './healthTrackSlice'; // Importa healthTrackReducer
 
 const characterReducer = combineReducers({
     characterDetails: characterDetailsSlice,
@@ -17,6 +18,7 @@ const characterReducer = combineReducers({
     kith: kithReducer,
     specialties: specialtyReducer,
     merits: meritSlice,
+    healthTrack: healthTrackReducer,
 });
 
 export default characterReducer;

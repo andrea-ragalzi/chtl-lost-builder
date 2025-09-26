@@ -34,7 +34,7 @@ export const DebugState = () => {
         >
             <Group justify="space-between" onClick={toggle} style={{ cursor: 'pointer' }}>
                 {isOpen ? (
-                    <Title order={5}>Debug: Builder State</Title>
+                    <Title order={5}>Debug: Character State</Title>
                 ) : <Title order={6}>Debug</Title>}
                 <ActionIcon variant="transparent" color="gray">
                     {isOpen ? <IconChevronDown size={18} /> : <IconChevronUp size={18} />}

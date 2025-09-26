@@ -10,6 +10,7 @@ const SKILL_GROUPS = {
 
 export const SkillsSection = () => {
   const { points, priorities } = useAppSelector((state) => state.character.skills);
+  const specialties = useAppSelector((state) => state.character.specialties.specialties);
 
 
   return (
@@ -17,7 +18,7 @@ export const SkillsSection = () => {
       <Title order={4} ta="center" tt="uppercase">Skills</Title>
       <Grid mt="sm">
         {Object.entries(SKILL_GROUPS).map(([groupKey, skills]) => {
-        const priorityValue = priorities[groupKey as keyof typeof priorities] || 0;
+          const priorityValue = priorities[groupKey as keyof typeof priorities] || 0;
           return (
             <Grid.Col key={groupKey} span={{ base: 12, md: 4 }}>
               <SkillsGroup
@@ -25,6 +26,7 @@ export const SkillsSection = () => {
                 skills={skills}
                 individual={points}
                 priority={priorityValue}
+                specialties={specialties}
               />
             </Grid.Col>
           );

@@ -24,10 +24,10 @@ const BuilderPage = () => {
             <ConceptSelection />
             <AttributeSelection />
             <SkillSelection />
-            {/* <SpecialtySelection /> */}
+            <SpecialtySelection />
             <SeemingSelection />
             <KithSelection />
-            {/* <MeritSelection /> */}
+            <MeritSelection />
 
             <Button
                 fullWidth

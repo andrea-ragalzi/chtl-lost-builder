@@ -9,6 +9,7 @@ import { SpecialtySelection } from '../features/builder/components/SpecialtySele
 import { MeritSelection } from '../features/builder/components/MeritSelection';
 import { useNavigate } from 'react-router-dom';
 import { DebugState } from '../shared/components/DebugState';
+import { CharacterDetails } from '../features/builder/components/CharacterDetails';
 
 const BuilderPage = () => {
     const navigate = useNavigate();
@@ -19,12 +20,13 @@ const BuilderPage = () => {
             <Text c="dimmed" mb="xl">
                 Inizia il tuo viaggio creando il tuo personaggio.
             </Text>
-            {/* <ConceptSelection /> */}
+            <CharacterDetails />
+            <ConceptSelection />
             <AttributeSelection />
-            {/* <SkillSelection /> */}
+            <SkillSelection />
             {/* <SpecialtySelection /> */}
-            {/* <SeemingSelection /> */}
-            {/* <KithSelection /> */}
+            <SeemingSelection />
+            <KithSelection />
             {/* <MeritSelection /> */}
 
             <Button

@@ -16,7 +16,7 @@ export const AttributesSection = () => {
             <Title order={4} ta="center" tt="uppercase">Attributes</Title>
             <Grid mt="sm">
                 {Object.entries(ATTRIBUTE_GROUPS).map(([groupKey, attrs]) => {
-                    const priorityValue = priorities[groupKey as keyof typeof priorities] || 0; // Prendi la priorità assegnata
+                    const priorityValue = priorities[groupKey as keyof typeof priorities] || 0;
                     return (
                         <Grid.Col key={groupKey} span={{ base: 12, md: 4 }}>
                             <AttributeGroup

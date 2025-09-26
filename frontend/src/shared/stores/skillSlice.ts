@@ -51,8 +51,7 @@ const skillSlice = createSlice({
             const { skill, value } = action.payload;
             const skillKey = skill.toLowerCase();
 
-            // Enforce min/max ratings of 0-3 for this step
-            if (value >= 0 && value <= 3) {
+            if (value >= 0 && value <= 5) {
                 state.points[skillKey] = value;
             }
         },

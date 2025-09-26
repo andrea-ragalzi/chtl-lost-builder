@@ -5,12 +5,12 @@ interface DotRatingProps {
   label: string;
   rating: number;
   max?: number;
-  onChange: (newValue: number) => void;
+  onChange?: (newValue: number) => void;
 }
 
 export const DotRating = ({ label, rating, max = 5, onChange }: DotRatingProps) => {
   const handleClick = (index: number) => {
-    onChange(index + 1);
+    onChange?.(index + 1);
   };
 
   return (

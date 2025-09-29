@@ -7,8 +7,13 @@ import skillReducer from './skillSlice';
 import specialtyReducer from './specialtySlice';
 import meritSlice from './meritSlice';
 import characterDetailsSlice from './characterDetailsSlice';
-import healthTrackReducer from './healthTrackSlice'; // Importa healthTrackReducer
-import willpowerSlice from './willpowerSlice';
+import healthTrackReducer from './healthTrackSlice';
+import willpowerReducer from './willpowerSlice';
+import narrativeReducer from './narrativeSlice';
+import conditionReducer from './conditionSlice';
+import wyrdReducer from './wyrdSlice';
+import glamourReducer from './glamourSlice';
+import clarityReducer from './claritySlice';
 
 const characterReducer = combineReducers({
     characterDetails: characterDetailsSlice,
@@ -20,7 +25,12 @@ const characterReducer = combineReducers({
     specialties: specialtyReducer,
     merits: meritSlice,
     healthTrack: healthTrackReducer,
-    willpower: willpowerSlice
+    willpower: willpowerReducer,
+    narrative: narrativeReducer,
+    conditions: conditionReducer,
+    wyrd: wyrdReducer,
+    glamour: glamourReducer,
+    clarity: clarityReducer,
 });
 
 export default characterReducer;

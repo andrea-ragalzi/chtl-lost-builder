@@ -4,6 +4,10 @@ import { CharacterDetails } from "../features/sheet/components/CharacterDetails"
 import { DebugState } from "../shared/components/DebugState";
 import { MeritsSection } from "../features/sheet/components/MeritsSection";
 import { DerivedTraits } from "../features/sheet/components/DerivedTraits";
+import { ConditionsTrack } from "../features/sheet/components/ConditionsTrack";
+import { WyrdTrack } from "../features/sheet/components/WyrdTrack";
+import { GlamourTrack } from "../features/sheet/components/GlamourTrack";
+import { ClarityTrack } from "../features/sheet/components/ClarityTrack";
 
 
 const CharacterSheetPage = () => {
@@ -15,6 +19,10 @@ const CharacterSheetPage = () => {
             <SkillsSection />
             <MeritsSection />
             <DerivedTraits />
+            <ConditionsTrack />
+            <WyrdTrack />
+            <GlamourTrack />
+            <ClarityTrack />
             {process.env.NODE_ENV === 'development' && <DebugState />}
         </>
     );

@@ -2,7 +2,7 @@ import { Group, Text, Box } from '@mantine/core';
 import { IconCircle, IconCircleFilled } from '@tabler/icons-react';
 
 interface DotRatingProps {
-  label: string;
+  label?: string;
   rating: number;
   max?: number;
   onChange?: (newValue: number) => void;

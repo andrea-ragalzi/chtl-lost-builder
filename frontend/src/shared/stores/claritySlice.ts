@@ -15,10 +15,13 @@ const claritySlice = createSlice({
     initialState,
     reducers: {
         setClarity: (state, action: PayloadAction<number>) => {
-            state.current = Math.min(action.payload, state.max);
+            state.current = Math.min(Math.max(0, action.payload), state.max);
         },
+        loseClarity: (state) => {
+            state.current = Math.max(0, state.current - 1);
+        }
     },
 });
 
-export const { setClarity } = claritySlice.actions;
+export const { setClarity, loseClarity } = claritySlice.actions; // Esporta anche loseClarity
 export default claritySlice.reducer;

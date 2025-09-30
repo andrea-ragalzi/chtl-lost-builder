@@ -10,6 +10,7 @@ import { GlamourTrack } from "../features/sheet/components/GlamourTrack";
 import { ClarityTrack } from "../features/sheet/components/ClarityTrack";
 import { ContractSection } from "../features/sheet/components/ContractSection";
 import { BlessingCurseSection } from "../features/sheet/components/BlessingCurseSection";
+import { GoblinDebtTrack } from "../features/sheet/components/GoblinDebtTrack";
 
 
 const CharacterSheetPage = () => {
@@ -27,6 +28,7 @@ const CharacterSheetPage = () => {
             <ClarityTrack />
             <ContractSection />
             <BlessingCurseSection />
+            <GoblinDebtTrack />
             {process.env.NODE_ENV === 'development' && <DebugState />}
         </>
     );

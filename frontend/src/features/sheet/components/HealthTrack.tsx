@@ -24,7 +24,7 @@ const HealthTrackBox = ({ damageType, index }: { damageType: 'none' | 'bashing' 
             style={{
                 width: '20px',
                 height: '20px',
-                border: '1px solid black',
+                border: '1px solid white',
                 textAlign: 'center',
                 cursor: 'pointer',
             }}

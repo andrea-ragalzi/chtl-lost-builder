@@ -11,6 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import { DebugState } from '../shared/components/DebugState';
 import { CharacterDetails } from '../features/builder/components/CharacterDetails';
 import { NarrativeList } from '../features/builder/components/NarrativeList';
+import { ContractSelection } from '../features/builder/components/ContractSelection';
 
 const BuilderPage = () => {
     const navigate = useNavigate();
@@ -32,6 +33,7 @@ const BuilderPage = () => {
             <NarrativeList title="Favored Regalia" listKey="favoredRegalia" isBuilderMode={true} listType="standard" maxItems={3} />
             <NarrativeList title="Frailties" listKey="frailties" isBuilderMode={true} listType="standard" maxItems={3} />
             <NarrativeList title="Touchstones" listKey="touchstones" isBuilderMode={true} listType="standard" maxItems={3} />
+            <ContractSelection />
             <Button
                 fullWidth
                 size="lg"

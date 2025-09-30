@@ -14,6 +14,7 @@ import conditionReducer from './conditionSlice';
 import wyrdReducer from './wyrdSlice';
 import glamourReducer from './glamourSlice';
 import clarityReducer from './claritySlice';
+import contractsSlice from './contractsSlice';
 
 const characterReducer = combineReducers({
     characterDetails: characterDetailsSlice,
@@ -31,6 +32,7 @@ const characterReducer = combineReducers({
     wyrd: wyrdReducer,
     glamour: glamourReducer,
     clarity: clarityReducer,
+    contracts: contractsSlice,
 });
 
 export default characterReducer;

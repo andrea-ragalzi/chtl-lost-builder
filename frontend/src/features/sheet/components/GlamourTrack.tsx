@@ -1,7 +1,8 @@
 import { Text } from '@mantine/core';
 import { useAppSelector, useAppDispatch } from '../../../shared/hooks/hooks';
 import { DotRating } from './DotRating';
-import { spendGlamour, regainGlamour } from '../../../shared/stores/glamourSlice';
+// --- CORREZIONE QUI: Usiamo 'gainGlamour' al posto di 'regainGlamour' ---
+import { spendGlamour, gainGlamour } from '../../../shared/stores/glamourSlice';
 
 export const GlamourTrack = () => {
     const dispatch = useAppDispatch();
@@ -10,16 +11,24 @@ export const GlamourTrack = () => {
 
     const handleGlamourChange = (newValue: number) => {
         if (newValue > glamour) {
-            dispatch(regainGlamour(newValue - glamour));
+            // Se newValue > glamour, abbiamo guadagnato. Usiamo gainGlamour.
+            dispatch(gainGlamour(newValue - glamour));
         } else if (newValue < glamour) {
+            // Se newValue < glamour, abbiamo speso. Usiamo spendGlamour.
             dispatch(spendGlamour(glamour - newValue));
         }
+        // Se newValue == glamour, non facciamo nulla.
     };
 
     return (
         <>
             <Text>Glamour:</Text>
-            <DotRating rating={glamour} max={maxGlamour} onChange={handleGlamourChange} />
+            <DotRating 
+                label="Glamour"
+                rating={glamour} 
+                max={maxGlamour} 
+                onChange={handleGlamourChange} 
+            />
         </>
     );
 };

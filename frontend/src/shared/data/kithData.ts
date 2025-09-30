@@ -1,4 +1,4 @@
-import type { KithDetails } from "../../features/builder/types/kithType";
+import type { KithDetails } from "../types/kithType";
 
 export const kithData: KithDetails[] = [
     {

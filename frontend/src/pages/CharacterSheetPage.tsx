@@ -9,6 +9,7 @@ import { WyrdTrack } from "../features/sheet/components/WyrdTrack";
 import { GlamourTrack } from "../features/sheet/components/GlamourTrack";
 import { ClarityTrack } from "../features/sheet/components/ClarityTrack";
 import { ContractSection } from "../features/sheet/components/ContractSection";
+import { BlessingCurseSection } from "../features/sheet/components/BlessingCurseSection";
 
 
 const CharacterSheetPage = () => {
@@ -25,6 +26,7 @@ const CharacterSheetPage = () => {
             <GlamourTrack />
             <ClarityTrack />
             <ContractSection />
+            <BlessingCurseSection />
             {process.env.NODE_ENV === 'development' && <DebugState />}
         </>
     );

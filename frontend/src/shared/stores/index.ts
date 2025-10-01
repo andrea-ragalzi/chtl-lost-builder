@@ -16,6 +16,12 @@ import glamourReducer from './glamourSlice';
 import clarityReducer from './claritySlice';
 import contractsSlice from './contractsSlice';
 import goblinDebtsSlice from './goblinDebtSlice';
+import pledgeSlice from './pledgeSlice';
+import faeMountSlice from './faeMountSlice';
+import mantleSlice from './mantleSlice';
+import hollowSlice from './hollowSlice';
+import tokenSlice from './tokenSlice';
+import combatSlice from './combatSlice';
 
 const characterReducer = combineReducers({
     characterDetails: characterDetailsSlice,
@@ -34,7 +40,13 @@ const characterReducer = combineReducers({
     glamour: glamourReducer,
     clarity: clarityReducer,
     contracts: contractsSlice,
-    goblinDebt: goblinDebtsSlice
+    goblinDebt: goblinDebtsSlice,
+    pledges: pledgeSlice,
+    faeMounts: faeMountSlice,
+    mantles: mantleSlice,
+    hollows: hollowSlice,
+    tokens: tokenSlice,
+    combat: combatSlice
 });
 
 export default characterReducer;

@@ -5,7 +5,7 @@ import { IconChevronDown, IconChevronUp } from '@tabler/icons-react';
 import React, { useState, useRef, useCallback } from 'react';
 
 export const DebugState = () => {
-    const [isOpen, { toggle }] = useDisclosure(true);
+    const [isOpen, { toggle }] = useDisclosure(false);
     const builderState = useAppSelector((state) => state.character);
 
     // Stato per la posizione del componente

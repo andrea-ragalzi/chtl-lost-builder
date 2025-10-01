@@ -12,6 +12,11 @@ import { DebugState } from '../shared/components/DebugState';
 import { CharacterDetails } from '../features/builder/components/CharacterDetails';
 import { NarrativeList } from '../features/builder/components/NarrativeList';
 import { ContractSelection } from '../features/builder/components/ContractSelection';
+import { FaeMountSelection } from '../features/builder/components/FaeMountSelection';
+import { HollowSelection } from '../features/builder/components/HollowSelection';
+import { MantleSelection } from '../features/builder/components/MantleSelection';
+import { TokenSelection } from '../features/builder/components/TokenSelection';
+import { CombatSelection } from '../features/builder/components/CombatSelection';
 
 const BuilderPage = () => {
     const navigate = useNavigate();
@@ -34,6 +39,11 @@ const BuilderPage = () => {
             <NarrativeList title="Frailties" listKey="frailties" isBuilderMode={true} listType="standard" maxItems={3} />
             <NarrativeList title="Touchstones" listKey="touchstones" isBuilderMode={true} listType="standard" maxItems={3} />
             <ContractSelection />
+            <FaeMountSelection />
+             <HollowSelection />
+            <MantleSelection />
+            <TokenSelection />
+            <CombatSelection />
             <Button
                 fullWidth
                 size="lg"

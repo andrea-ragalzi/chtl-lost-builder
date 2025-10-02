@@ -9,7 +9,7 @@ export const seemingData: SeemingDetails[] = [
         bonus: "Gain +1 in one Resistance Attribute of your choice.",
         blessing: "You can deal lethal damage with your unarmed attacks and gain a +3 bonus to Initiative and Speed.",
         curse: "If you act without thinking and cause significant harm or complications to someone else, you risk losing Clarity.",
-        image: 'https://placehold.co/400x300/795548/FFFFFF?text=Beast'
+        image: '../../../public/images/seeming/beast.png'
     },
     {
         value: 'darkling',
@@ -19,7 +19,7 @@ export const seemingData: SeemingDetails[] = [
         bonus: "Gain a +1 in an Attribute of your choice between Wits or Dexterity.",
         blessing: "You can become temporarily intangible.",
         curse: "If a secret you know turns out to be false, you risk losing Clarity.",
-        image: 'https://placehold.co/400x300/212121/FFFFFF?text=Darkling'
+        image: '../../../public/images/seeming/darkling.png'
     },
     {
         value: 'elemental',
@@ -29,7 +29,7 @@ export const seemingData: SeemingDetails[] = [
         bonus: "Gain a +1 in an Attribute of your choice between Presence or Stamina.",
         blessing: "You can move and act through your element.",
         curse: "If you are forced to do something you don't want to, you risk losing Clarity.",
-        image: 'https://placehold.co/400x300/03A9F4/FFFFFF?text=Elemental'
+        image: '../../../public/images/seeming/elemental.png'
     },
     {
         value: 'fairest',
@@ -39,7 +39,7 @@ export const seemingData: SeemingDetails[] = [
         bonus: "Gain a +1 in an Attribute of your choice between Manipulation or Composure.",
         blessing: "You can use your Willpower to help another character.",
         curse: "If your actions harm your allies, you risk losing Clarity.",
-        image: 'https://placehold.co/400x300/E91E63/FFFFFF?text=Fairest'
+        image: '../../../public/images/seeming/fairest.png'
     },
     {
         value: 'ogre',
@@ -49,7 +49,7 @@ export const seemingData: SeemingDetails[] = [
         bonus: "Gain a +1 in an Attribute of your choice between Manipulation or Stamina.",
         blessing: "You can weaken an opponent with your attacks, inflicting the Beaten Down Condition.",
         curse: "If strangers are afraid of you, you risk losing Clarity.",
-        image: 'https://placehold.co/400x300/F44336/FFFFFF?text=Ogre'
+        image: '../../../public/images/seeming/ogre.png'
     },
     {
         value: 'wizened',
@@ -59,6 +59,6 @@ export const seemingData: SeemingDetails[] = [
         bonus: "Gain a +1 in an Attribute of your choice between Intelligence or Dexterity.",
         blessing: "You can create unique objects by combining unconventional materials.",
         curse: "If you are taken off guard by an unpleasant surprise, you risk losing Clarity.",
-        image: 'https://placehold.co/400x300/FF9800/FFFFFF?text=Wizened'
+        image: '../../../public/images/seeming/wizened.png'
     },
 ];

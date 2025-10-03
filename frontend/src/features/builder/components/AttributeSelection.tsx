@@ -16,7 +16,16 @@ export const AttributeSelection = () => {
     const priorities = useAppSelector((state) => state.character.attributes.priorities);
     const individual = useAppSelector((state) => state.character.attributes.individual);
 
+    const resetAttributes = () => {
+        Object.keys(ATTRIBUTE_GROUPS).forEach(groupKey => {
+            ATTRIBUTE_GROUPS[groupKey as keyof typeof ATTRIBUTE_GROUPS].forEach(attribute => {
+                dispatch(updateAttribute({ attribute: attribute as keyof typeof individual, value: 1 }));
+            });
+        });
+    };
+
     const handleSetPriority = (group: keyof typeof ATTRIBUTE_GROUPS, value: number) => {
+        resetAttributes();
         dispatch(setPriority({ group, value }));
     };
 
@@ -29,11 +38,11 @@ export const AttributeSelection = () => {
         const remaining = getPointsRemaining(group);
 
         if (delta > 0 && remaining <= 0) {
-            return; // Non incrementare se non ci sono punti rimanenti
+            return;
         }
 
         if (delta < 0 && currentValue <= 1) {
-            return; // Non decrementare sotto 1
+            return;
         }
 
         const newValue = Math.max(1, currentValue + delta);
@@ -42,7 +51,6 @@ export const AttributeSelection = () => {
 
     const getGroupTotal = (group: keyof typeof ATTRIBUTE_GROUPS) => {
         const attrs = ATTRIBUTE_GROUPS[group];
-        // Corrected: Sum the bonus points (value - 1)
         return attrs.reduce((sum, attr) => sum + (individual[attr.toLowerCase() as keyof typeof individual] - 1), 0);
     };
 
@@ -61,15 +69,11 @@ export const AttributeSelection = () => {
                 </Text>
             </Stack>
 
-            <Paper withBorder p="md" mb="xl">
-                <Text ta="center" fw={500}>Assign the values 5, 4, 3 to the Mental, Physical, and Social groups, then distribute points within each group.</Text>
-            </Paper>
-
             <Stack gap="lg" mb="xl">
                 {Object.keys(ATTRIBUTE_GROUPS).map((group) => (
-                    <Group key={group} grow>
-                        <Text fw={700} tt="capitalize" ta="right" style={{ flex: 1 }}>{group}</Text>
-                        <Group justify="center" style={{ flex: 2 }}>
+                    <Group key={group} >
+                        <Text fw={700} tt="capitalize" style={{ flex: 1 }}>{group}</Text>
+                        <Group justify="end" style={{ flex: 2 }}>
                             {PRIORITIES.map((value) => {
                                 const isSelected = priorities[group as keyof typeof priorities] === value;
                                 return (
@@ -91,12 +95,11 @@ export const AttributeSelection = () => {
             <SimpleGrid cols={{ base: 1, sm: 3 }} spacing="lg">
                 {Object.entries(ATTRIBUTE_GROUPS).map(([groupKey, attrs]) => {
                     const group = groupKey as keyof typeof ATTRIBUTE_GROUPS;
-                    const budget = priorities[group];
                     const used = getGroupTotal(group);
                     const remaining = getPointsRemaining(group);
                     return (
                         <Paper withBorder p="md" key={groupKey}>
-                            <Title order={4} tt="capitalize">{groupKey} (Budget: {budget})</Title>
+                            <Title order={4} tt="capitalize">{groupKey}</Title>
                             <Text size="sm" c={remaining < 0 ? 'red' : 'green'}>Used: {used} / Remaining: {remaining}</Text>
                             <Stack mt="md">
                                 {attrs.map(attr => {
@@ -106,7 +109,7 @@ export const AttributeSelection = () => {
                                     const canDecrement = value > 1;
                                     return (
                                         <Group key={attr} justify="space-between">
-                                            <Text>{attr}</Text>
+                                            <Text tt="capitalize">{attr}</Text>
                                             <Group gap="xs">
                                                 <ActionIcon
                                                     size="sm"

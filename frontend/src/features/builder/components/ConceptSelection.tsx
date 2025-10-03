@@ -21,7 +21,7 @@ export const ConceptSelection = () => {
         <Box p="md">
             <Stack align="center" mb="xl">
                 <Title order={2}>Create Your Character</Title>
-                <Text c="dimmed" ta="center" maw={500}>
+                <Text c="dimmed" ta="left" maw={500}>
                     Your journey begins with a story. Think about who you were and how you became one of the Lost. Answer these questions to bring your character to life.
                 </Text>
             </Stack>

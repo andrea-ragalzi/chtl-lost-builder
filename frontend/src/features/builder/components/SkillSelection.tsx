@@ -1,4 +1,4 @@
-import { Box, Title, Text, Stack, Button, Group, SimpleGrid, Paper, ActionIcon, Divider } from '@mantine/core';
+import { Box, Title, Text, Stack, Button, Group, SimpleGrid, Paper, ActionIcon } from '@mantine/core';
 import { useAppDispatch, useAppSelector } from '../../../shared/hooks/hooks';
 import { setSkillPoints, setSkillPriority } from '../../../shared/stores/skillSlice';
 import { SKILL_GROUPS } from '../../../shared/data/skillData';
@@ -7,17 +7,19 @@ import { useMemo } from 'react';
 
 const SKILL_PRIORITIES = [11, 7, 4];
 
+
+
 // A helper component for a single skill row with a counter
 const SkillCounter = ({ name, value, onUpdate, canIncrease }: { name: string, value: number, onUpdate: (newValue: number) => void, canIncrease: boolean }) => {
     return (
         <Group justify="space-between">
             <Text>{name}</Text>
             <Group gap="xs" align="center">
-                <ActionIcon size="sm" variant="outline" onClick={() => onUpdate(value - 1)} disabled={value <= 0}>
+                <ActionIcon size="sm" onClick={() => onUpdate(value - 1)} disabled={value <= 0}>
                     <IconMinus size={14} />
                 </ActionIcon>
                 <Text w={20} ta="center" fw={700}>{value}</Text>
-                <ActionIcon size="sm" variant="outline" onClick={() => onUpdate(value + 1)} disabled={value >= 3 || !canIncrease}>
+                <ActionIcon size="sm" onClick={() => onUpdate(value + 1)} disabled={value >= 3 || !canIncrease}>
                     <IconPlus size={14} />
                 </ActionIcon>
             </Group>
@@ -29,7 +31,16 @@ export const SkillSelection = () => {
     const dispatch = useAppDispatch();
     const { priorities: skillPointDistribution, points: skillPoints } = useAppSelector((state) => state.character.skills);
 
+    const resetSkills = () => {
+        Object.keys(SKILL_GROUPS).forEach(groupKey => {
+            SKILL_GROUPS[groupKey as keyof typeof SKILL_GROUPS].forEach(skill => {
+                dispatch(setSkillPoints({ skill, value: 0 }));
+            });
+        });
+    };
+
     const handlePriorityChange = (group: keyof typeof SKILL_GROUPS, value: number) => {
+        resetSkills();
         dispatch(setSkillPriority({ group, value }));
     };
 
@@ -37,7 +48,6 @@ export const SkillSelection = () => {
         dispatch(setSkillPoints({ skill, value }));
     };
 
-    // Calculate remaining points for each group
     const remainingPoints = useMemo(() => {
         const remaining: Record<string, number> = {};
         for (const group in SKILL_GROUPS) {
@@ -60,15 +70,11 @@ export const SkillSelection = () => {
                 </Text>
             </Stack>
 
-            <Paper withBorder p="md" mb="xl">
-                <Text ta="center" fw={500}>1. Assign the values 11, 7, and 4 to the Skill groups.</Text>
-            </Paper>
-
             <Stack gap="lg" mb="xl">
                 {Object.keys(SKILL_GROUPS).map((group) => (
-                    <Group key={group} grow>
-                        <Text fw={700} tt="capitalize" ta="right" style={{ flex: 1 }}>{group}</Text>
-                        <Group justify="center" style={{ flex: 2 }}>
+                    <Group key={group} >
+                        <Text fw={700} tt="capitalize" ta="left" style={{ flex: 1 }}>{group}</Text>
+                        <Group justify="right" style={{ flex: 2 }}>
                             {SKILL_PRIORITIES.map((value) => {
                                 const isSelected = skillPointDistribution[group as keyof typeof skillPointDistribution] === value;
                                 return (
@@ -87,9 +93,6 @@ export const SkillSelection = () => {
                 ))}
             </Stack>
 
-            <Divider my="xl" label="2. Distribute points to individual Skills" labelPosition="center" />
-
-            {/* --- Existing Point Distribution Section --- */}
             <SimpleGrid cols={{ base: 1, sm: 3 }} spacing="lg">
                 {Object.entries(SKILL_GROUPS).map(([groupKey, skills]) => {
                     const groupName = groupKey as keyof typeof SKILL_GROUPS;
@@ -98,12 +101,8 @@ export const SkillSelection = () => {
 
                     return (
                         <Paper withBorder p="md" key={groupKey}>
-                            <Group justify="space-between">
-                                <Title order={4} tt="capitalize">{groupName}</Title>
-                                <Text fw={700} c={pointsLeft < 0 ? 'red' : 'dimmed'}>
-                                    {pointsLeft} / {totalPoints}
-                                </Text>
-                            </Group>
+                            <Title order={4} tt="capitalize">{groupKey}</Title>
+                            <Text size="sm" c={pointsLeft < 0 ? 'red' : 'green'}>Used: {totalPoints - pointsLeft} / Remaining: {pointsLeft}</Text>
                             <Stack mt="md" gap="sm">
                                 {skills.map(skill => (
                                     <SkillCounter

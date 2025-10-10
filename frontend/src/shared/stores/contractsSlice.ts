@@ -2,6 +2,8 @@ import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import { v4 as uuidv4 } from 'uuid';
 import type { ContractItem, ContractState } from '../types/contracType';
 
+type UpdateContractPayload = Partial<ContractItem> & { id: string };
+
 const initialState: ContractState = {
     list: [],
 };
@@ -19,25 +21,18 @@ const contractsSlice = createSlice({
             state.list.push(newContract);
         },
         // Builder Action: Updates all fields of an existing contract
-        updateContract: (state, action: PayloadAction<ContractItem>) => {
+        updateContract: (state, action: PayloadAction<UpdateContractPayload>) => {
             const index = state.list.findIndex((c) => c.id === action.payload.id);
             if (index !== -1) {
-                state.list[index] = action.payload;
+                state.list[index] = { ...state.list[index], ...action.payload } as ContractItem;
             }
         },
         // Builder Action: Removes a contract
         removeContract: (state, action: PayloadAction<{ id: string }>) => {
             state.list = state.list.filter((c) => c.id !== action.payload.id);
         },
-        // Sheet/Tracking Action: For future in-game use
-        toggleGoblinPact: (state, action: PayloadAction<{ id: string }>) => {
-            const contract = state.list.find((c) => c.id === action.payload.id);
-            if (contract) {
-                contract.isGoblinPact = !contract.isGoblinPact;
-            }
-        },
     },
 });
 
-export const { addContract, updateContract, removeContract, toggleGoblinPact } = contractsSlice.actions;
+export const { addContract, updateContract, removeContract } = contractsSlice.actions;
 export default contractsSlice.reducer;

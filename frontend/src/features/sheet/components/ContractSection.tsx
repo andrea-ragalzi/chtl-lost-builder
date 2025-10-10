@@ -1,19 +1,46 @@
 // src/features/sheet/contracts/ContractSection.tsx
 
-import React from 'react';
+import React, { useState } from 'react';
 import {
-    Box, Title, Table, Text
+    Box, Title, Text, Modal, useMantineTheme, Stack
 } from '@mantine/core';
 
 import { useAppSelector } from '../../../shared/hooks/hooks';
-import { ContractRow } from './ContractRow'; // Importiamo il componente riga
+import { ContractRow } from './ContractRow';
+import type { ContractItem } from '../../../shared/types/contracType';
+
+// --- 1. Contenuto del modale semplificato ---
+const ContractDetailsModal: React.FC<{ contract: ContractItem | null }> = ({ contract }) => {
+    if (!contract) return null;
+
+    // Usiamo 'pre-wrap' per rispettare gli "a capo" nella descrizione
+    return (
+        <Box>
+            <Text style={{ whiteSpace: 'pre-wrap' }}>
+                {contract.description}
+            </Text>
+        </Box>
+    );
+};
 
 export const ContractSection: React.FC = () => {
     // Leggiamo i contratti dal nodo "contracts" sotto "character"
     const contracts = useAppSelector((state) => state.character.contracts.list);
+    const [opened, setOpened] = useState(false);
+    const [selectedContract, setSelectedContract] = useState<ContractItem | null>(null);
+    const theme = useMantineTheme();
 
-    const rows = contracts.map((contract) => (
-        <ContractRow key={contract.id} contract={contract} />
+    const handleDetailsClick = (contract: ContractItem) => {
+        setSelectedContract(contract);
+        setOpened(true);
+    };
+
+    const contractItems = contracts.map((contract) => (
+        <ContractRow
+            key={contract.id}
+            contract={contract}
+            onDetailsClick={() => handleDetailsClick(contract)}
+        />
     ));
 
     return (
@@ -23,22 +50,25 @@ export const ContractSection: React.FC = () => {
             {contracts.length === 0 ? (
                 <Text c="dimmed">No Contracts assigned. Use the Builder to add powers.</Text>
             ) : (
-                <Table striped highlightOnHover withTableBorder withColumnBorders>
-                    <Table.Thead>
-                        <Table.Tr>
-                            <Table.Th style={{ width: '15%' }}>Name</Table.Th>
-                            <Table.Th style={{ width: '8%' }}>Action</Table.Th>
-                            <Table.Th style={{ width: '15%' }}>Dice Pool</Table.Th>
-                            <Table.Th style={{ width: '10%' }}>Duration</Table.Th>
-                            <Table.Th style={{ width: '18%' }}>Loophole</Table.Th>
-                            <Table.Th style={{ width: '18%' }}>Seeming Benefit</Table.Th>
-                            <Table.Th style={{ width: '5%', textAlign: 'center' }}>Goblin</Table.Th>
-                            <Table.Th style={{ width: '11%' }}>Cost / Activate</Table.Th>
-                        </Table.Tr>
-                    </Table.Thead>
-                    <Table.Tbody>{rows}</Table.Tbody>
-                </Table>
+                <Stack>
+                    {contractItems}
+                </Stack>
             )}
+
+            <Modal
+                opened={opened}
+                onClose={() => setOpened(false)}
+                title={selectedContract?.name || 'Contract Details'}
+                centered
+                size="lg"
+                overlayProps={{
+                    color: theme.colors.dark[9],
+                    opacity: 0.55,
+                    blur: 3,
+                }}
+            >
+                <ContractDetailsModal contract={selectedContract} />
+            </Modal>
         </Box>
     );
 };

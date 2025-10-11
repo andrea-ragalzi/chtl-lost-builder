@@ -4,6 +4,8 @@ import { useAppSelector } from '../../../shared/hooks/hooks';
 import type { RootState } from '../../../app/store';
 import type { CombatItem } from '../../../shared/stores/combatSlice';
 
+const HEADER_WIDTH = 120;
+
 const COMBAT_COLUMNS_METADATA = {
     'weaponAttack': { label: 'Weapon/Attack', desktopSpan: 2 },
     'dicePool': { label: 'Dice Pool', desktopSpan: 4 },
@@ -21,7 +23,7 @@ export const CombatSection: React.FC = () => {
         return (
             <Box>
                 <Title order={3} mb="sm">COMBAT</Title>
-                <Text c="dimmed" size="sm" pt="md">Nessun attacco tracciato. Aggiungi nuovi attacchi nel Costruttore Combattimento.</Text>
+                <Text c="dimmed" size="sm" pt="md">No attacks tracked. Add new attacks in the Builder.</Text>
             </Box>
         );
     }
@@ -44,6 +46,7 @@ export const CombatSection: React.FC = () => {
             {/* Desktop Layout (Horizontal Table) - Visible from “sm” upwards */}
             <Table
                 layout="fixed"
+                style={{ whiteSpace: 'normal', wordBreak: 'break-word' }}
                 withTableBorder
                 striped
                 highlightOnHover
@@ -62,30 +65,36 @@ export const CombatSection: React.FC = () => {
             {/* Mobile Layout (Vertical Table Stack) - Hidden from “sm” upwards */}
             <Stack>
                 {combatItems.map((item: CombatItem) => (
-                    <Table variant="vertical" layout="fixed" withTableBorder key={item.id} hiddenFrom='sm'>
+                    <Table
+                        variant="vertical"
+                        layout='fixed'
+                        style={{ whiteSpace: 'normal', wordBreak: 'break-word' }}
+                        withTableBorder
+                        key={item.id}
+                        hiddenFrom='sm'>
                         <Table.Tbody>
                             <Table.Tr>
-                                <Table.Th w={160}>{COMBAT_COLUMNS_METADATA.weaponAttack.label}</Table.Th>
-                                <Table.Td style={{ scrollBehavior: 'smooth' }}>{item.weaponAttack}</Table.Td>
+                                <Table.Th w={HEADER_WIDTH}>{COMBAT_COLUMNS_METADATA.weaponAttack.label}</Table.Th>
+                                <Table.Td>{item.weaponAttack}</Table.Td>
                             </Table.Tr>
                             <Table.Tr>
-                                <Table.Th w={160}>{COMBAT_COLUMNS_METADATA.dicePool.label}</Table.Th>
+                                <Table.Th w={HEADER_WIDTH}>{COMBAT_COLUMNS_METADATA.dicePool.label}</Table.Th>
                                 <Table.Td>{item.dicePool}</Table.Td>
                             </Table.Tr>
                             <Table.Tr>
-                                <Table.Th w={160}>{COMBAT_COLUMNS_METADATA.damage.label}</Table.Th>
+                                <Table.Th w={HEADER_WIDTH}>{COMBAT_COLUMNS_METADATA.damage.label}</Table.Th>
                                 <Table.Td>{item.damage}</Table.Td>
                             </Table.Tr>
                             <Table.Tr>
-                                <Table.Th w={160}>{COMBAT_COLUMNS_METADATA.range.label}</Table.Th>
+                                <Table.Th w={HEADER_WIDTH}>{COMBAT_COLUMNS_METADATA.range.label}</Table.Th>
                                 <Table.Td>{item.range}</Table.Td>
                             </Table.Tr>
                             <Table.Tr>
-                                <Table.Th w={160}>{COMBAT_COLUMNS_METADATA.initiative.label}</Table.Th>
+                                <Table.Th w={HEADER_WIDTH}>{COMBAT_COLUMNS_METADATA.initiative.label}</Table.Th>
                                 <Table.Td>{item.initiative}</Table.Td>
                             </Table.Tr>
                             <Table.Tr>
-                                <Table.Th w={160}>{COMBAT_COLUMNS_METADATA.size.label}</Table.Th>
+                                <Table.Th w={HEADER_WIDTH}>{COMBAT_COLUMNS_METADATA.size.label}</Table.Th>
                                 <Table.Td>{item.size}</Table.Td>
                             </Table.Tr>
                         </Table.Tbody>

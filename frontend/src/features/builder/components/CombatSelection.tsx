@@ -1,4 +1,4 @@
-import { Box, Title, Group, Stack, TextInput, ActionIcon, Button, Text, Flex } from '@mantine/core';
+import { Box, Title, Group, Stack, TextInput, ActionIcon, Button, Text, Flex, useMantineTheme } from '@mantine/core';
 import { IconTrash, IconPlus, IconX } from '@tabler/icons-react';
 import React, { useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../shared/hooks/hooks';
@@ -9,6 +9,7 @@ import type { RootState } from '../../../app/store';
 
 const CombatBuilderRow: React.FC<{ item: CombatItem }> = ({ item }) => {
     const dispatch = useAppDispatch();
+    const theme = useMantineTheme();
 
     const handleUpdate = <K extends keyof CombatItem>(field: K, value: CombatItem[K]) => {
         dispatch(updateCombatItem({ id: item.id, [field]: value }));
@@ -21,14 +22,29 @@ const CombatBuilderRow: React.FC<{ item: CombatItem }> = ({ item }) => {
     };
 
     return (
-        <Group wrap="nowrap" gap="xs" align="center" p="sm">
+        <Group
+            // wrap="nowrap"  // Rimosso
+            gap="xs"
+            align="center"
+            p="sm"
+            style={{
+                // Aggiunto stile responsive
+                [`@media (max-width: ${theme.breakpoints.md}px)`]: {
+                    flexDirection: 'column', // Impila gli elementi verticalmente su schermi piccoli
+                    alignItems: 'stretch',   // Falli allargare per riempire la larghezza
+                },
+            }}
+        >
             <TextInput
                 value={item.weaponAttack}
                 onChange={(e) => handleUpdate('weaponAttack', e.currentTarget.value)}
                 placeholder="Sword, Pistol, Bite"
                 label="Weapon/Attack"
                 size="sm"
-                style={{ flexBasis: '25%' }}
+                style={{
+                    // flexBasis: '25%', // Rimosso
+                    flexGrow: 1,         // Aggiunto
+                }}
             />
             <TextInput
                 value={item.dicePool}
@@ -36,7 +52,10 @@ const CombatBuilderRow: React.FC<{ item: CombatItem }> = ({ item }) => {
                 placeholder="DEX + Firearms + 1"
                 label="Dice Pool"
                 size="sm"
-                style={{ flexBasis: '20%' }}
+                style={{
+                    // flexBasis: '20%', // Rimosso
+                    flexGrow: 1,         // Aggiunto
+                }}
             />
             <TextInput
                 value={item.damage}
@@ -44,7 +63,10 @@ const CombatBuilderRow: React.FC<{ item: CombatItem }> = ({ item }) => {
                 placeholder="4L, 2B"
                 label="Damage"
                 size="sm"
-                style={{ flexBasis: '10%' }}
+                style={{
+                    // flexBasis: '10%', // Rimosso
+                    flexGrow: 1,         // Aggiunto
+                }}
             />
             <TextInput
                 value={item.range}
@@ -52,7 +74,10 @@ const CombatBuilderRow: React.FC<{ item: CombatItem }> = ({ item }) => {
                 placeholder="Melee, 10/20"
                 label="Range"
                 size="sm"
-                style={{ flexBasis: '10%' }}
+                style={{
+                    // flexBasis: '10%', // Rimosso
+                    flexGrow: 1,         // Aggiunto
+                }}
             />
             <TextInput
                 value={item.initiative}
@@ -60,7 +85,10 @@ const CombatBuilderRow: React.FC<{ item: CombatItem }> = ({ item }) => {
                 placeholder="+0, -2"
                 label="Initiative"
                 size="sm"
-                style={{ flexBasis: '10%' }}
+                style={{
+                    // flexBasis: '10%', // Rimosso
+                    flexGrow: 1,         // Aggiunto
+                }}
             />
             <TextInput
                 value={item.size}
@@ -68,7 +96,10 @@ const CombatBuilderRow: React.FC<{ item: CombatItem }> = ({ item }) => {
                 placeholder="1, 3"
                 label="Size"
                 size="sm"
-                style={{ flexBasis: '10%' }}
+                style={{
+                    // flexBasis: '10%', // Rimosso
+                    flexGrow: 1,         // Aggiunto
+                }}
             />
             <ActionIcon
                 size="md"
@@ -89,7 +120,8 @@ const CombatBuilderRow: React.FC<{ item: CombatItem }> = ({ item }) => {
 
 const CombatAddRow: React.FC = () => {
     const dispatch = useAppDispatch();
-    
+    const theme = useMantineTheme();
+
     // State for the new item being entered
     const [newWeaponAttack, setNewWeaponAttack] = useState('');
     const [newDicePool, setNewDicePool] = useState('');
@@ -118,7 +150,7 @@ const CombatAddRow: React.FC = () => {
             initiative: newInitiative.trim(),
             size: newSize.trim(),
         }));
-        
+
         resetFields();
     };
 
@@ -126,25 +158,38 @@ const CombatAddRow: React.FC = () => {
     const isCancelVisible = newWeaponAttack.trim() || newDicePool.trim() || newDamage.trim() || newRange.trim() || newInitiative.trim() || newSize.trim();
 
     return (
-        <Stack 
-            gap="xs" 
-            p="sm" 
-            style={{ 
-                border: '2px dashed var(--mantine-color-gray-5)', 
+        <Stack
+            gap="xs"
+            p="sm"
+            style={{
+                border: '2px dashed var(--mantine-color-gray-5)',
                 borderRadius: '4px',
                 marginTop: '15px'
             }}
         >
             <Text fw={500} size="md" c="dimmed">Add New Attack</Text>
-            
-            <Group wrap="nowrap" gap="xs">
-                 <TextInput
+
+            <Group
+                // wrap="nowrap"  // Rimosso
+                gap="xs"
+                style={{
+                    // Aggiunto stile responsive
+                    [`@media (max-width: ${theme.breakpoints.md}px)`]: {
+                        flexDirection: 'column', // Impila gli elementi verticalmente su schermi piccoli
+                        alignItems: 'stretch',   // Falli allargare per riempire la larghezza
+                    },
+                }}
+            >
+                <TextInput
                     value={newWeaponAttack}
                     onChange={(e) => setNewWeaponAttack(e.currentTarget.value)}
                     placeholder="Weapon/Attack"
                     label="Weapon/Attack"
                     size="sm"
-                    style={{ flexBasis: '25%' }}
+                    style={{
+                        // flexBasis: '25%', // Rimosso
+                        flexGrow: 1,         // Aggiunto
+                    }}
                 />
                 <TextInput
                     value={newDicePool}
@@ -152,7 +197,10 @@ const CombatAddRow: React.FC = () => {
                     placeholder="Dice Pool"
                     label="Dice Pool"
                     size="sm"
-                    style={{ flexBasis: '20%' }}
+                    style={{
+                        // flexBasis: '20%', // Rimosso
+                        flexGrow: 1,         // Aggiunto
+                    }}
                 />
                 <TextInput
                     value={newDamage}
@@ -160,7 +208,10 @@ const CombatAddRow: React.FC = () => {
                     placeholder="Damage"
                     label="Damage"
                     size="sm"
-                    style={{ flexBasis: '10%' }}
+                    style={{
+                        // flexBasis: '10%', // Rimosso
+                        flexGrow: 1,         // Aggiunto
+                    }}
                 />
                 <TextInput
                     value={newRange}
@@ -168,7 +219,10 @@ const CombatAddRow: React.FC = () => {
                     placeholder="Range"
                     label="Range"
                     size="sm"
-                    style={{ flexBasis: '10%' }}
+                    style={{
+                        // flexBasis: '10%', // Rimosso
+                        flexGrow: 1,         // Aggiunto
+                    }}
                 />
                 <TextInput
                     value={newInitiative}
@@ -176,7 +230,10 @@ const CombatAddRow: React.FC = () => {
                     placeholder="Initiative Mod"
                     label="Initiative"
                     size="sm"
-                    style={{ flexBasis: '10%' }}
+                    style={{
+                        // flexBasis: '10%', // Rimosso
+                        flexGrow: 1,         // Aggiunto
+                    }}
                 />
                 <TextInput
                     value={newSize}
@@ -184,7 +241,10 @@ const CombatAddRow: React.FC = () => {
                     placeholder="Size"
                     label="Size"
                     size="sm"
-                    style={{ flexBasis: '10%' }}
+                    style={{
+                        // flexBasis: '10%', // Rimosso
+                        flexGrow: 1,         // Aggiunto
+                    }}
                 />
             </Group>
 
@@ -217,12 +277,12 @@ const CombatAddRow: React.FC = () => {
 
 export const CombatSelection: React.FC = () => {
     // Corrected state path: state.character.combat
-    const combatItems = useAppSelector((state: RootState) => state.character.combat); 
+    const combatItems = useAppSelector((state: RootState) => state.character.combat);
 
     return (
         <Box>
-            <Title order={3} mb="sm">COMBAT (Builder)</Title>
-            
+            <Title order={3} mb="sm">COMBAT</Title>
+
             <Stack gap="md" mb="md">
                 {combatItems.length === 0 && (
                     <Text c="dimmed" size="sm">No attacks tracked.</Text>

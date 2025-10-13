@@ -5,15 +5,16 @@ import { WillpowerTrack } from './WillpowerTrack'; // Importa il componente Will
 
 export const DerivedTraits = () => {
     // Leggi gli attributi e le abilità dallo store
-    const { attributes } = useAppSelector((state) => state.character);
-    const primaryAttributes = attributes.individual;
+    const { attributes, skills } = useAppSelector((state) => state.character);
+    const individualAttributes = attributes.individual;
+    const individualSkills = skills.points;
 
     // Calcola i tratti derivati in base alle formule
     const baseSize = 5;
-    const health = primaryAttributes.stamina + baseSize;
-    const initiative = primaryAttributes.dexterity + primaryAttributes.wits;
-    const speed = primaryAttributes.strength + 5;
-    const defense = Math.min(primaryAttributes.wits, primaryAttributes.dexterity);
+    const health = individualAttributes.stamina + baseSize;
+    const initiative = individualAttributes.dexterity + individualAttributes.composure;
+    const speed = individualAttributes.strength + individualAttributes.dexterity + 5;
+    const defense = Math.min(individualAttributes.wits, individualAttributes.dexterity) + individualSkills.athletics;
     const armor = 0;
 
     return (

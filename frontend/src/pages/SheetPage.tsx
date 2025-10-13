@@ -21,7 +21,7 @@ import { TokenSection } from "../features/sheet/components/TokenSection";
 import { CombatSection } from "../features/sheet/components/CombatSection";
 
 
-const CharacterSheetPage = () => {
+const SheetPage = () => {
     const navigate = useNavigate();
 
     return (
@@ -57,4 +57,4 @@ const CharacterSheetPage = () => {
     );
 };
 
-export default CharacterSheetPage;
+export default SheetPage;

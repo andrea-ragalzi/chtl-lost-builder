@@ -43,7 +43,7 @@ export const NarrativeList = ({ title, listKey, isBuilderMode, listType, maxItem
     };
 
     return (
-        <Box my="lg">
+        <Box>
             <Title order={4} mb="sm">{title}</Title>
 
             <Stack gap="xs">

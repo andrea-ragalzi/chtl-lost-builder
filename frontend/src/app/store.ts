@@ -11,8 +11,6 @@ import {
 } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import characterReducer from '../shared/stores';
-import authReducer from '../features/auth/stores/authSlice';
-
 
 const characterPersistConfig = {
   key: 'character',
@@ -25,8 +23,7 @@ const persistedCharacterReducer = persistReducer(characterPersistConfig, charact
 
 export const store = configureStore({
   reducer: {
-    character: persistedCharacterReducer,
-    auth: authReducer,
+    character: persistedCharacterReducer
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

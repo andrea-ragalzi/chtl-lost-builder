@@ -75,16 +75,16 @@ const MeritRow = ({ merit, currentRating, onRatingChange, checkAffordabilityForT
                     </Group>
 
                     <Text size="sm" c="dimmed">
-                        Costo: {isMultiLevel ? '1 punto per dot' : `${merit.cost[0]} punti (costo fisso)`}
+                        Cost: {isMultiLevel ? '1 point per dot' : `${merit.cost[0]} ${merit.cost[0] === 1 ? 'point' : 'points'}`}
                     </Text>
 
                     {merit.prerequisites && (
                         <Text size="sm" c="dimmed">
-                            Prerequisiti: {merit.prerequisites}
+                            Prerequisites: {merit.prerequisites}
                         </Text>
                     )}
 
-                    <Spoiler maxHeight={50} showLabel="Mostra di più" hideLabel="Nascondi">
+                    <Spoiler maxHeight={50} showLabel="Show More" hideLabel="Hide">
                         <Text size="sm">{merit.effect}</Text>
                     </Spoiler>
                 </Stack>
@@ -186,15 +186,16 @@ export const MeritSelection = () => {
     return (
         <Box p="md">
             <Stack align="center" mb="xl">
-                <Title order={2}>6. Aggiungi i tuoi Meriti</Title>
+                <Title order={2}>6. Add Your Merits</Title>
                 <Text c="dimmed" ta="center" maw={600}>
-                    I Meriti sono vantaggi speciali. Hai **{MAX_MERIT_POINTS} punti Merito** da spendere.
-                </Text>
+                    Merits are special advantages. You have **{MAX_MERIT_POINTS} merit points** to spend.
+                    Click the dots or toggle the switch to select merits. The cost will adjust based on your selections.
+                    The prerequisites are not binding for selection in order to allow flexibility, but please ensure that you meet them.</Text>
             </Stack>
 
             <Paper withBorder p="md" mb="xl">
                 <Group justify="center">
-                    <Text fw={700}>Punti Rimanenti:</Text>
+                    <Text fw={700}>Remaining Points:</Text>
                     <Text size="xl" fw={700} c={pointsRemaining < 0 ? 'red' : 'blue'}>
                         {pointsRemaining}
                     </Text>

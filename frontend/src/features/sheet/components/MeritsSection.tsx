@@ -20,7 +20,7 @@ export const MeritsSection = () => {
             <Title order={4} ta="center" tt="uppercase">Merits</Title>
             <Stack mt="sm">
                 {Object.entries(merits).map(([name, level]) => (
-                    <Group key={name}>
+                    <Group key={name} style={{ justifyContent: 'space-between' }}>
                         <Text>
                             {name} (Level: {level})
                         </Text>

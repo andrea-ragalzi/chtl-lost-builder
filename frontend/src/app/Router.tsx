@@ -5,7 +5,7 @@ import RootLayout from '../pages/RootPage';
 
 // Pagine caricate in modo "lazy"
 const BuilderPage = lazy(() => import('../pages/BuilderPage'));
-const CharacterSheetPage = lazy(() => import('../pages/CharacterSheetPage'));
+const SheetPage = lazy(() => import('../pages/SheetPage'));
 const NotFoundPage = lazy(() => import('../pages/NotFoundPage'));
 
 export const router = createBrowserRouter([
@@ -38,7 +38,7 @@ export const router = createBrowserRouter([
             path: 'sheet',
             element: (
               <Suspense fallback={<Fallback />}>
-                <CharacterSheetPage />
+                <SheetPage />
               </Suspense>
             ),
           },

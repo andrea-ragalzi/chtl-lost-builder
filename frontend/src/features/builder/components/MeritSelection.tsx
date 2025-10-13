@@ -1,7 +1,8 @@
-import { Box, Title, Text, Stack, Group, Paper, ThemeIcon, Switch } from '@mantine/core';
+import { Box, Title, Text, Stack, Group, Paper, ThemeIcon, Switch, Spoiler, Badge } from '@mantine/core';
 import { useAppDispatch, useAppSelector } from '../../../shared/hooks/hooks';
 import { setMeritRating } from '../../../shared/stores/meritSlice';
-import { meritData, type Merit } from '../../../shared/data/meritData';
+import { meritData } from '../../../shared/data/meritData';
+import type { Merit } from '../../../shared/types/meritType';
 import { IconCircle, IconCircleFilled } from '@tabler/icons-react';
 import { useMemo } from 'react';
 
@@ -22,10 +23,26 @@ const MeritRow = ({ merit, currentRating, onRatingChange, canAfford }: { merit: 
 
     return (
         <Paper withBorder p="md" radius="sm">
-            <Group justify="space-between">
-                <Stack gap={0} style={{ flex: 1 }}>
-                    <Text fw={700}>{merit.name} ({isMultiLevel ? '1-3' : merit.cost[0]} pts)</Text>
-                    <Text size="sm" c="dimmed">{merit.description}</Text>
+            <Group justify="space-between" align="flex-start">
+                <Stack gap="xs" style={{ flex: 1 }}>
+                    <Group align="center" gap="sm">
+                        <Text fw={700} size="lg">{merit.name}</Text>
+                        <Badge variant="light">{merit.category}</Badge>
+                    </Group>
+
+                    <Text size="sm" c="dimmed">
+                        Cost: {isMultiLevel ? merit.cost.join(' / ') : merit.cost[0]} points
+                    </Text>
+
+                    {merit.prerequisites && (
+                        <Text size="sm" c="dimmed">
+                            prerequisites: {merit.prerequisites}
+                        </Text>
+                    )}
+
+                    <Spoiler maxHeight={50} showLabel="Show more" hideLabel="Hide">
+                        <Text size="sm">{merit.effect}</Text>
+                    </Spoiler>
                 </Stack>
 
                 {isMultiLevel ? (
@@ -69,10 +86,15 @@ export const MeritSelection = () => {
         return Object.entries(selectedMerits).reduce((sum, [name, rating]) => {
             const merit = meritData.find(m => m.name === name);
             if (!merit || rating === 0) return sum;
-            const cost = merit.cost[rating - 1] || 0;
+            // Correctly calculate cost for multi-level merits
+            let cost = 0;
+            for (let i = 0; i < rating; i++) {
+                cost += merit.cost[i] || 0;
+            }
             return sum + cost;
         }, 0);
     }, [selectedMerits]);
+
 
     const pointsRemaining = MAX_MERIT_POINTS - totalPointsSpent;
 
@@ -81,8 +103,18 @@ export const MeritSelection = () => {
         if (!merit) return false;
 
         const currentRating = selectedMerits[meritName] || 0;
-        const currentCost = currentRating > 0 ? merit.cost[currentRating - 1] : 0;
-        const newCost = newRating > 0 ? merit.cost[newRating - 1] : 0;
+
+        // Calculate cost of current selection
+        let currentCost = 0;
+        for (let i = 0; i < currentRating; i++) {
+            currentCost += merit.cost[i] || 0;
+        }
+
+        // Calculate cost of new selection
+        let newCost = 0;
+        for (let i = 0; i < newRating; i++) {
+            newCost += merit.cost[i] || 0;
+        }
 
         const costDifference = newCost - currentCost;
         return pointsRemaining >= costDifference;
@@ -93,6 +125,11 @@ export const MeritSelection = () => {
             dispatch(setMeritRating({ name, rating }));
         }
     };
+
+    // This function is passed to the MeritRow to check if a single dot can be afforded
+    const canAffordSingleCost = (costChange: number) => {
+        return pointsRemaining >= costChange;
+    }
 
     return (
         <Box p="md">
@@ -119,7 +156,7 @@ export const MeritSelection = () => {
                         merit={merit}
                         currentRating={selectedMerits[merit.name] || 0}
                         onRatingChange={(newRating) => handleRatingChange(merit.name, newRating)}
-                        canAfford={(costChange) => pointsRemaining >= costChange}
+                        canAfford={canAffordSingleCost}
                     />
                 ))}
             </Stack>

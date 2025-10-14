@@ -1,0 +1,22 @@
+{
+   "id": "chtlb-app",
+  "name": "Changeling: The lost builder",
+  "short_name": "CHTLB",
+  "description": "A character sheet application that works offline.",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#42a5f5",
+  "icons": [
+    {
+      "src": "skull_128.png",
+      "sizes": "128x128",
+      "type": "image/png"
+    },
+    {
+      "src": "skull_512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

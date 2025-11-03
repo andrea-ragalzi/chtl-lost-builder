@@ -107,7 +107,7 @@ const BuilderPage = () => {
                 Go to Character Sheet
             </Button>
 
-            {process.env.NODE_ENV === 'development' && <DebugState />}
+            {/* {process.env.NODE_ENV === 'development' && <DebugState />} */}
         </Box>
     );
 };

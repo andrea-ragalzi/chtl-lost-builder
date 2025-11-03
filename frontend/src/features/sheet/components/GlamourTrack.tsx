@@ -1,4 +1,3 @@
-import { Text } from '@mantine/core';
 import { useAppSelector, useAppDispatch } from '../../../shared/hooks/hooks';
 import { DotRating } from './DotRating';
 // --- CORREZIONE QUI: Usiamo 'gainGlamour' al posto di 'regainGlamour' ---
@@ -22,12 +21,11 @@ export const GlamourTrack = () => {
 
     return (
         <>
-            <Text>Glamour:</Text>
             <DotRating 
-                label="Glamour"
                 rating={glamour} 
                 max={maxGlamour} 
-                onChange={handleGlamourChange} 
+                onChange={handleGlamourChange}
+                wrap={true}
             />
         </>
     );

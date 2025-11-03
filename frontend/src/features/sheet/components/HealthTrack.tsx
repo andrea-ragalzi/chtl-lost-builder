@@ -46,7 +46,7 @@ export const HealthTrack = ({ health }: HealthTrackProps) => {
     }, [health, dispatch]);
 
     return (
-        <Group gap={2} wrap="nowrap">
+        <Group gap={2} wrap="wrap">
             {healthTrackState.damage.map((damageType, index) => (
                 <HealthTrackBox key={index} damageType={damageType} index={index} />
             ))}

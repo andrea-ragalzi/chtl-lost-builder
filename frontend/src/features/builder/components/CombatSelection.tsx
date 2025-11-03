@@ -29,7 +29,7 @@ const CombatBuilderRow: React.FC<{ item: CombatItem }> = ({ item }) => {
             p="sm"
             style={{
                 // Aggiunto stile responsive
-                [`@media (max-width: ${theme.breakpoints.md}px)`]: {
+                [`@media (maxWidth: ${theme.breakpoints.md}px)`]: {
                     flexDirection: 'column', // Impila gli elementi verticalmente su schermi piccoli
                     alignItems: 'stretch',   // Falli allargare per riempire la larghezza
                 },
@@ -174,7 +174,7 @@ const CombatAddRow: React.FC = () => {
                 gap="xs"
                 style={{
                     // Aggiunto stile responsive
-                    [`@media (max-width: ${theme.breakpoints.md}px)`]: {
+                    [`@media (maxWidth: ${theme.breakpoints.md}px)`]: {
                         flexDirection: 'column', // Impila gli elementi verticalmente su schermi piccoli
                         alignItems: 'stretch',   // Falli allargare per riempire la larghezza
                     },

@@ -1,4 +1,4 @@
-import { Title, Stack, Group, Text } from '@mantine/core';
+import { Title, Stack, Group, Divider } from '@mantine/core';
 import { DotRating } from './DotRating';
 import { useAppDispatch } from '../../../shared/hooks/hooks';
 import { updateAttribute } from '../../../shared/stores/attributeSlice';
@@ -12,7 +12,7 @@ interface AttributeGroupProps {
     priority: number;
 }
 
-export const AttributeGroup = ({ groupKey, attrs, individual, priority }: AttributeGroupProps) => {
+export const AttributeGroup = ({ groupKey, attrs, individual }: AttributeGroupProps) => {
     const dispatch = useAppDispatch();
 
     const handleAttributeChange = (attribute: string, value: number) => {
@@ -22,18 +22,21 @@ export const AttributeGroup = ({ groupKey, attrs, individual, priority }: Attrib
     return (
         <>
             <Group justify="space-between" align="center">
-                <Title order={6} tt="capitalize">{groupKey}</Title>
-                <Text size="sm" c="dimmed">({priority})</Text>
+                <Title order={4} tt="capitalize">{groupKey} Attributes</Title>
             </Group>
-            <Stack gap="xs" mt="xs">
+            <Divider size="md" mb="xs" />
+            <Stack gap="xs">
                 {attrs.map(attr => (
-                    <DotRating
-                        key={attr}
-                        label={attr}
-                        rating={individual[attr]}
-                        max={5}
-                        onChange={(value: number) => handleAttributeChange(attr, value)}
-                    />
+                    <>
+                        <DotRating
+                            key={attr}
+                            label={attr}
+                            rating={individual[attr]}
+                            max={5}
+                            onChange={(value: number) => handleAttributeChange(attr, value)}
+                        />
+                        {attrs.indexOf(attr) !== attrs.length - 1 && <Divider size="xs" />}
+                    </>
                 ))}
             </Stack>
         </>

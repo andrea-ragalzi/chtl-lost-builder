@@ -25,10 +25,10 @@ export const WillpowerTrack: React.FC = () => {
     return (
         <Group align="start">
             <DotRating
-                label="Willpower"
                 rating={currentWillpower}
                 max={maxWillpower}
                 onChange={handleWillpowerChange}
+                wrap={true}
             />
         </Group>
     );

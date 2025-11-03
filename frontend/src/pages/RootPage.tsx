@@ -9,10 +9,7 @@ const RootLayout = () => {
 
     return (
         <>
-            <AppShell
-                header={{ height: 60 }}
-                padding="md"
-            >
+            <AppShell header={{ height: 60 }}>
                 <AppShell.Header>
                     <Flex align="center" justify="space-between" style={{ height: '100%' }} px="md">
                         <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />

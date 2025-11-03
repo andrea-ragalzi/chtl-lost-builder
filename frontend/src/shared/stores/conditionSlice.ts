@@ -42,8 +42,14 @@ const conditionSlice = createSlice({
         setInitialConditions: (state, action: PayloadAction<ConditionItem[]>) => {
             state.list = action.payload;
         },
+        updateCondition: (state, action: PayloadAction<{ id: string; name: string }>) => {
+            const condition = state.list.find(c => c.id === action.payload.id);
+            if (condition) {
+                condition.name = action.payload.name;
+            }
+        }
     },
 });
 
-export const { addCondition, toggleCondition, removeCondition, setInitialConditions } = conditionSlice.actions;
+export const { addCondition, toggleCondition, removeCondition, setInitialConditions, updateCondition } = conditionSlice.actions;
 export default conditionSlice.reducer;

@@ -2,7 +2,7 @@ import { Box, Title, Stack } from '@mantine/core';
 import { MantleSection } from './MantleSection';
 import { HollowSection } from './HollowSection';
 import { FaeMountSection } from './FaeMountSection';
-import { TokensSection } from './TokenSection';
+import { TokenSection } from './TokenSection';
 
 
 export const ExpandedMeritsTrack = () => {
@@ -16,7 +16,7 @@ export const ExpandedMeritsTrack = () => {
                 <MantleSection />
                 <HollowSection />
                 <FaeMountSection />
-                <TokensSection />
+                <TokenSection />
                 
             </Stack>
         </Box>

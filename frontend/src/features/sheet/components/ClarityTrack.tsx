@@ -1,4 +1,3 @@
-import { Text } from '@mantine/core';
 import { useAppSelector, useAppDispatch } from '../../../shared/hooks/hooks';
 import { DotRating } from './DotRating';
 import { setClarity } from '../../../shared/stores/claritySlice';
@@ -13,9 +12,7 @@ export const ClarityTrack = () => {
     };
 
     return (
-        <>
-            <Text>Clarity:</Text>
-            <DotRating rating={clarity} max={maxClarity} onChange={handleClarityChange} />
-        </>
+
+        <DotRating rating={clarity} max={maxClarity} wrap={true} onChange={handleClarityChange} />
     );
 };

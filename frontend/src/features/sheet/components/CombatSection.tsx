@@ -1,8 +1,10 @@
-import { Box, Title, Text, Table, Stack } from '@mantine/core';
+import { Box, Title, Text, Table, Stack, Grid, Paper } from '@mantine/core';
 import React from 'react';
 import { useAppSelector } from '../../../shared/hooks/hooks';
 import type { RootState } from '../../../app/store';
 import type { CombatItem } from '../../../shared/stores/combatSlice';
+
+
 
 const HEADER_WIDTH = 120;
 
@@ -17,7 +19,16 @@ const COMBAT_COLUMNS_METADATA = {
 
 
 export const CombatSection: React.FC = () => {
+    const { attributes, skills } = useAppSelector((state) => state.character);
+    const individualAttributes = attributes.individual;
+    const individualSkills = skills.points;
     const combatItems = useAppSelector((state: RootState) => state.character.combat);
+
+
+    const initiative = individualAttributes.dexterity + individualAttributes.composure;
+    const speed = individualAttributes.strength + individualAttributes.dexterity + 5;
+    const defense = Math.min(individualAttributes.wits, individualAttributes.dexterity) + individualSkills.athletics;
+    const armor = 0;
 
     if (combatItems.length === 0) {
         return (
@@ -41,8 +52,31 @@ export const CombatSection: React.FC = () => {
 
     return (
         <Box>
-            <Title order={3} mb="sm">COMBAT</Title>
+            <Box w="100%" mb="md">
+                <Grid gutter="xs">
+                    <Grid.Col span={{ base: 6, xs: 3 }} py={0}>
+                        <Paper p="xs" withBorder style={{ overflow: 'hidden' }}>
+                            <Text fw={500} mb="xs" size="sm">Initiative: {initiative}</Text>
+                        </Paper>
+                    </Grid.Col>
+                    <Grid.Col span={{ base: 6, xs: 3 }} py={0}>
+                        <Paper p="xs" withBorder style={{ overflow: 'hidden' }}>
+                            <Text fw={500} mb="xs" size="sm">Speed: {speed}</Text>
 
+                        </Paper>
+                    </Grid.Col>
+                    <Grid.Col span={{ base: 6, xs: 3 }} py={0}>
+                        <Paper p="xs" withBorder style={{ overflow: 'hidden' }}>
+                            <Text fw={500} mb="xs" size="sm">Defense: {defense}</Text>
+                        </Paper>
+                    </Grid.Col>
+                    <Grid.Col span={{ base: 6, xs: 3 }} py={0}>
+                        <Paper p="xs" withBorder style={{ overflow: 'hidden' }}>
+                            <Text fw={500} mb="xs" size="sm">Armor: {armor}</Text>
+                        </Paper>
+                    </Grid.Col>
+                </Grid>
+            </Box>
             {/* Desktop Layout (Horizontal Table) - Visible from “sm” upwards */}
             <Table
                 layout="fixed"

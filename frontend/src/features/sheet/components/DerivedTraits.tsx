@@ -1,51 +1,52 @@
-import { Paper, Title, Grid, Text } from '@mantine/core';
+import { Grid, Text, Box, Paper } from '@mantine/core';
 import { useAppSelector } from '../../../shared/hooks/hooks';
 import { HealthTrack } from './HealthTrack';
-import { WillpowerTrack } from './WillpowerTrack'; // Importa il componente WillpowerTrack
+import { WillpowerTrack } from './WillpowerTrack';
+import { GlamourTrack } from './GlamourTrack';
+import { ClarityTrack } from './ClarityTrack';
 
 export const DerivedTraits = () => {
-    // Leggi gli attributi e le abilità dallo store
-    const { attributes, skills } = useAppSelector((state) => state.character);
+    const { attributes } = useAppSelector((state) => state.character);
     const individualAttributes = attributes.individual;
-    const individualSkills = skills.points;
-
-    // Calcola i tratti derivati in base alle formule
     const baseSize = 5;
     const health = individualAttributes.stamina + baseSize;
-    const initiative = individualAttributes.dexterity + individualAttributes.composure;
-    const speed = individualAttributes.strength + individualAttributes.dexterity + 5;
-    const defense = Math.min(individualAttributes.wits, individualAttributes.dexterity) + individualSkills.athletics;
-    const armor = 0;
 
     return (
-        <Paper withBorder p="md">
-            <Title order={4} ta="center" mb="sm">Derived Traits</Title>
-            <Grid>
-                <Grid.Col span={6}>
-                    <Text fw={500}>Health:</Text>
-                    <HealthTrack health={health} />
+        <Box w="100%" mb="md">
+            <Grid gutter="xs">
+                <Grid.Col span={{ base: 6, md: 3 }} py={0}>
+                    <Paper p="xs" withBorder style={{ overflow: 'hidden' }}>
+                        <Text fw={500} mb="xs" size="sm">Health</Text>
+                        <Box pb={5} style={{ maxWidth: '100%' }}>
+                            <HealthTrack health={health} />
+                        </Box>
+                    </Paper>
                 </Grid.Col>
-                <Grid.Col span={6}>
-                    <Text fw={500}>Willpower:</Text>
-                    <WillpowerTrack />
+                <Grid.Col span={{ base: 6, md: 3 }} py={0}>
+                    <Paper p="xs" withBorder style={{ overflow: 'hidden' }}>
+                        <Text fw={500} mb="xs" size="sm">Willpower</Text>
+                        <Box style={{ maxWidth: '100%' }}>
+                            <WillpowerTrack />
+                        </Box>
+                    </Paper>
                 </Grid.Col>
-                <Grid.Col span={6}>
-                    <Text fw={500}>Initiative:</Text>
-                    <Text>{initiative}</Text>
+                <Grid.Col span={{ base: 6, md: 3 }} py={0}>
+                    <Paper p="xs" withBorder style={{ overflow: 'hidden' }}>
+                        <Text fw={500} mb="xs" size="sm">Glamour</Text>
+                        <Box style={{ maxWidth: '100%' }}>
+                            <GlamourTrack />
+                        </Box>
+                    </Paper>
                 </Grid.Col>
-                <Grid.Col span={6}>
-                    <Text fw={500}>Speed:</Text>
-                    <Text>{speed}</Text>
-                </Grid.Col>
-                <Grid.Col span={6}>
-                    <Text fw={500}>Defense:</Text>
-                    <Text>{defense}</Text>
-                </Grid.Col>
-                <Grid.Col span={6}>
-                    <Text fw={500}>Armor:</Text>
-                    <Text>{armor}</Text>
+                <Grid.Col span={{ base: 6, md: 3 }} py={0}>
+                    <Paper p="xs" withBorder style={{ overflow: 'hidden' }}>
+                        <Text fw={500} mb="xs" size="sm">Clarity</Text>
+                        <Box style={{ maxWidth: '100%' }}>
+                            <ClarityTrack />
+                        </Box>
+                    </Paper>
                 </Grid.Col>
             </Grid>
-        </Paper>
+        </Box>
     );
 };

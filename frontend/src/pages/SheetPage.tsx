@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Tabs, Box, rem, Button, Divider, Title, Text, Stack } from '@mantine/core';
+import { Tabs, Box, rem, Button, Divider, Title, Text } from '@mantine/core';
 import { IconBolt, IconFeather, IconId, IconBackpack, IconBook } from '@tabler/icons-react';
 
 import { CharacterDetails } from "../features/sheet/components/CharacterDetails";
@@ -10,44 +10,19 @@ import { WyrdTrack } from "../features/sheet/components/WyrdTrack";
 import { ContractSection } from "../features/sheet/components/ContractSection";
 import { BlessingCurseSection } from "../features/sheet/components/BlessingCurseSection";
 import { GoblinDebtTrack } from "../features/sheet/components/GoblinDebtTrack";
-import { PledgeTrack } from "../features/sheet/components/PledgeTrack";
+import { PledgeTrack } from '../features/sheet/components/PledgeTrack';
 import { FaeMountSection } from "../features/sheet/components/FaeMountSection";
 import { MantleSection } from '../features/sheet/components/MantleSection';
 import { HollowSection } from "../features/sheet/components/HollowSection";
-import { TokenSection } from "../features/sheet/components/TokenSection";
 import { CombatSection } from "../features/sheet/components/CombatSection";
 import { AttributesSection } from '../features/sheet/components/AttributesSection';
 import { SkillsSection } from '../features/sheet/components/SkillsSection';
 import { DerivedTraits } from '../features/sheet/components/DerivedTraits';
-import { TouchstoneSection } from '../features/sheet/components/TouchstoneSection';
-
-const AspirationsSection = () => (
-    <Stack>
-        <Text fw={700}>Aspirations:</Text>
-        <Text ml="md">- Short, Medium, Long</Text>
-    </Stack>
-);
-
-const FaeIdentitySection = () => (
-    <Stack>
-        <Text fw={700}>Fae Identity:</Text>
-        <Text ml="md">- Seeming / Kith / Court</Text>
-    </Stack>
-);
-
-const FrailtiesSection = () => (
-    <Stack>
-        <Text fw={700}>Frailties:</Text>
-        <Text ml="md">- Frailty details</Text>
-    </Stack>
-);
-
-const InventorySection = () => (
-    <Stack>
-        <Text fw={700}>Inventory & Weapons:</Text>
-        <Text ml="md">- Item/weapon list...</Text>
-    </Stack>
-);
+import { TouchstonesSection } from '../features/sheet/components/TouchstoneSection';
+import { AspirationsTrack } from '../features/sheet/components/AspirationsTrack';
+import { ExperienceTrack } from '../features/sheet/components/ExperienceTrack';
+import { FrailtiesSection } from '../features/sheet/components/FrailtiesSection';
+import { FavoredRegaliaSection } from '../features/sheet/components/FavoredRegaliaSection';
 
 const TAB_GROUPS = {
     BOARD: 'board',
@@ -83,27 +58,22 @@ const SheetPage = () => {
                     </Tabs.Panel>
 
                     <Tabs.Panel value={TAB_GROUPS.STORY} style={panelStyle}>
-                        <TouchstoneSection />
+                        <ExperienceTrack />
+                        <AspirationsTrack />
+                        <TouchstonesSection />
+                        <PledgeTrack />
+                        <GoblinDebtTrack />
                         <ConditionsTrack />
                     </Tabs.Panel>
 
                     <Tabs.Panel value={TAB_GROUPS.FAE} style={panelStyle}>
-                        <Title order={3} mb="md">Fae Identity & Powers</Title>
-
-                        <Divider my="md" label="Power Level & Identity" labelPosition="center" />
                         <WyrdTrack />
-                        <FaeIdentitySection />
                         <MantleSection />
-
-                        <Divider my="md" label="Contracts & Magic" labelPosition="center" />
                         <ContractSection />
                         <BlessingCurseSection />
-                        <TokenSection />
-
-                        <Divider my="md" label="Obligations & Frailties" labelPosition="center" />
-                        <GoblinDebtTrack />
-                        <PledgeTrack />
+                        <HollowSection />
                         <FrailtiesSection />
+                        <FavoredRegaliaSection />
                     </Tabs.Panel>
 
                     <Tabs.Panel value={TAB_GROUPS.PROFILE} style={panelStyle}>
@@ -134,8 +104,6 @@ const SheetPage = () => {
                         <FaeMountSection />
                         <HollowSection />
 
-                        <Divider my="md" label="Inventory" labelPosition="center" />
-                        <InventorySection />
                     </Tabs.Panel>
 
                 </Tabs>

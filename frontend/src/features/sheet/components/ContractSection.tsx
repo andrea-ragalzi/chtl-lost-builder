@@ -1,5 +1,3 @@
-// src/features/sheet/contracts/ContractSection.tsx
-
 import React, { useState } from 'react';
 import {
     Box, Title, Text, Modal, useMantineTheme, Stack
@@ -9,11 +7,9 @@ import { useAppSelector } from '../../../shared/hooks/hooks';
 import { ContractRow } from './ContractRow';
 import type { ContractItem } from '../../../shared/types/contracType';
 
-// --- 1. Contenuto del modale semplificato ---
 const ContractDetailsModal: React.FC<{ contract: ContractItem | null }> = ({ contract }) => {
     if (!contract) return null;
 
-    // Usiamo 'pre-wrap' per rispettare gli "a capo" nella descrizione
     return (
         <Box>
             <Text style={{ whiteSpace: 'pre-wrap' }}>
@@ -24,7 +20,6 @@ const ContractDetailsModal: React.FC<{ contract: ContractItem | null }> = ({ con
 };
 
 export const ContractSection: React.FC = () => {
-    // Leggiamo i contratti dal nodo "contracts" sotto "character"
     const contracts = useAppSelector((state) => state.character.contracts.list);
     const [opened, setOpened] = useState(false);
     const [selectedContract, setSelectedContract] = useState<ContractItem | null>(null);
@@ -44,7 +39,7 @@ export const ContractSection: React.FC = () => {
     ));
 
     return (
-        <Box>
+        <Box mb="md">
             <Title order={3} mb="md">Contracts</Title>
 
             {contracts.length === 0 ? (

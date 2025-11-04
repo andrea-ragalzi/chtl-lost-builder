@@ -9,7 +9,6 @@ import meritSlice from './meritSlice';
 import characterDetailsSlice from './characterDetailsSlice';
 import healthTrackReducer from './healthTrackSlice';
 import willpowerReducer from './willpowerSlice';
-import narrativeReducer from './narrativeSlice';
 import conditionReducer from './conditionSlice';
 import wyrdReducer from './wyrdSlice';
 import glamourReducer from './glamourSlice';
@@ -22,6 +21,11 @@ import mantleSlice from './mantleSlice';
 import hollowSlice from './hollowSlice';
 import tokenSlice from './tokenSlice';
 import combatSlice from './combatSlice';
+import favoredRegaliaSlice from './favoredRegaliaSlice';
+import frailtiesSlice from './frailtiesSlice';
+import touchstonesSlice from './touchstonesSlice';
+import aspirationsSlice from './aspirationsSlice';
+import experienceSlice from './experienceSlice';
 
 const characterReducer = combineReducers({
     characterDetails: characterDetailsSlice,
@@ -34,7 +38,6 @@ const characterReducer = combineReducers({
     merits: meritSlice,
     healthTrack: healthTrackReducer,
     willpower: willpowerReducer,
-    narrative: narrativeReducer,
     conditions: conditionReducer,
     wyrd: wyrdReducer,
     glamour: glamourReducer,
@@ -46,7 +49,12 @@ const characterReducer = combineReducers({
     mantles: mantleSlice,
     hollows: hollowSlice,
     tokens: tokenSlice,
-    combat: combatSlice
+    combat: combatSlice,
+    favoredRegalia: favoredRegaliaSlice,
+    frailties: frailtiesSlice,
+    touchstones: touchstonesSlice,
+    aspirations: aspirationsSlice,
+    experience: experienceSlice
 });
 
 export default characterReducer;

@@ -1,9 +1,10 @@
-import { Box, Title, Group, Stack, Text } from '@mantine/core';
+import { Fieldset, Group, Stack, Text, Paper } from '@mantine/core';
 import React from 'react';
 import { useAppSelector } from '../../../shared/hooks/hooks';
 import type { RootState } from '../../../app/store';
 
-const HollowDisplayRow: React.FC<{ id: string }> = ({ id }) => {
+const HollowDisplayRow: React.FC<{ id: string }> = ({
+    id }) => {
     const hollow = useAppSelector((state: RootState) =>
         state.character.hollows.find(h => h.id === id)
     );
@@ -11,15 +12,21 @@ const HollowDisplayRow: React.FC<{ id: string }> = ({ id }) => {
     if (!hollow) return null;
 
     return (
-        <Stack gap="xs" p="sm" style={{ border: '1px solid var(--mantine-color-gray-3)', borderRadius: '4px' }}>
-            <Group justify="space-between" align="baseline">
-                <Text fw={700} size="md">Hollow: {hollow.size}</Text>
-                <Text size="sm" c="dimmed">Sicurezza: {hollow.security}</Text>
+        <Paper p="sm" withBorder>
+            <Group justify="space-between" mb="xs">
+                <Group gap="md">
+                    <Text fw={700} size="sm">Size: {hollow.size}</Text>
+                    <Text fw={700} size="sm">Security: {hollow.security}</Text>
+                </Group>
             </Group>
 
-            <Text size="sm" c="dimmed" fw={500}>Descrizione / Poteri:</Text>
-            <Text size="sm">{hollow.description || 'Nessuna descrizione.'}</Text>
-        </Stack>
+            {hollow.description && (
+                <Stack gap={4}>
+                    <Text size="xs" c="dimmed" fw={500}>Description:</Text>
+                    <Text size="sm">{hollow.description}</Text>
+                </Stack>
+            )}
+        </Paper>
     );
 };
 
@@ -27,17 +34,19 @@ export const HollowSection: React.FC = () => {
     const hollows = useAppSelector((state: RootState) => state.character.hollows);
 
     return (
-        <Box>
-            <Title order={4} mb="sm">HOLLOW</Title>
-            <Stack gap="md" mb="md">
+        <Fieldset legend="Hollow">
+            <Stack gap="md">
                 {hollows.length === 0 ? (
-                    <Text c="dimmed" size="sm">Nessun Hollow tracciato. Aggiungi nel Builder.</Text>
+                    <Text c="dimmed" size="sm">No hollow tracked. Add in the Builder.</Text>
                 ) : (
                     hollows.map(hollow => (
-                        <HollowDisplayRow key={hollow.id} id={hollow.id} />
+                        <HollowDisplayRow
+                            key={hollow.id}
+                            id={hollow.id}
+                        />
                     ))
                 )}
             </Stack>
-        </Box>
+        </Fieldset>
     );
 };

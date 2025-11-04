@@ -1,145 +1,143 @@
-import { Box, Title, Group, Text, ActionIcon, Stack, TextInput, Flex } from '@mantine/core';
-import { IconTrash, IconPlus } from '@tabler/icons-react';
-import { useAppSelector, useAppDispatch } from '../../../shared/hooks/hooks';
-import {
-    addPledge,
-    removePledge,
-    updatePledge,
-    type PledgeItem
-} from '../../../shared/stores/pledgeSlice';
-import React, { useState } from 'react';
-import type { RootState } from '../../../app/store'; // Assumi questo path per RootState
+import { Stack, TextInput, ActionIcon, Group, Paper, Text, Button } from '@mantine/core';
+import { IconPlus, IconTrash, IconEdit } from '@tabler/icons-react';
+import { useState } from 'react';
+import { useAppDispatch, useAppSelector } from '../../../shared/hooks/hooks';
+import { addPledge, removePledge, updatePledge } from '../../../shared/stores/pledgeSlice';
 
-// Componente per una singola riga di Pledge
-const PledgeRow: React.FC<{ pledge: PledgeItem }> = ({ pledge }) => {
+export const PledgeTrack = () => {
     const dispatch = useAppDispatch();
-
-    const handleTypeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        dispatch(updatePledge({ id: pledge.id, type: e.target.value }));
-    };
-
-    const handleDescriptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        dispatch(updatePledge({ id: pledge.id, description: e.target.value }));
-    };
-
-    const handleRemove = () => {
-        if (window.confirm("Sei sicuro di voler rimuovere questo Pegno? (Rimosso/Speso/Rotto)")) {
-            dispatch(removePledge(pledge.id));
-        }
-    };
-
-    return (
-        <Group wrap="nowrap" gap="xs" style={{ width: '100%', alignItems: 'center' }}>
-            {/* Campo TYPE */}
-            <TextInput
-                value={pledge.type}
-                onChange={handleTypeChange}
-                placeholder="Tipo"
-                style={{ width: '20%' }}
-                size="sm"
-                variant="filled"
-            />
-
-            {/* Campo NOTES / DESCRIPTION */}
-            <TextInput
-                value={pledge.description}
-                onChange={handleDescriptionChange}
-                placeholder="Dettagli del Patto..."
-                style={{ flexGrow: 1 }}
-                size="sm"
-                variant="filled"
-            />
-
-            {/* Pulsante Rimuovi */}
-            <ActionIcon
-                size="sm"
-                variant="subtle"
-                color="red"
-                onClick={handleRemove}
-                title="Rimuovi Pegno (Speso o Adempiuto)"
-            >
-                <IconTrash size={16} />
-            </ActionIcon>
-        </Group>
-    );
-};
-
-
-export const PledgeTrack: React.FC = () => {
-    const dispatch = useAppDispatch();
-    // **ATTENZIONE:** Modifica il path dello state se necessario (es. state.character.pledges.list)
-    const allPledges = useAppSelector((state: RootState) => state.character.pledges.list);
-
-    // Stato locale per l'aggiunta rapida
+    const pledges = useAppSelector((state) => state.character.pledges.list);
     const [newType, setNewType] = useState('');
     const [newDescription, setNewDescription] = useState('');
+    const [editingId, setEditingId] = useState<string | null>(null);
+    const [editType, setEditType] = useState('');
+    const [editDescription, setEditDescription] = useState('');
 
-    const handleAddPledge = () => {
-        if (!newDescription.trim()) {
-            alert("La descrizione del Pegno non può essere vuota.");
-            return;
+    const handleAdd = () => {
+        if (newDescription.trim()) {
+            dispatch(addPledge({
+                type: newType.trim() || 'Service',
+                description: newDescription.trim()
+            }));
+            setNewType('');
+            setNewDescription('');
         }
-        dispatch(addPledge({
-            type: newType.trim() || 'Servizio',
-            description: newDescription.trim()
-        }));
-        // Resetta i campi
-        setNewType('');
-        setNewDescription('');
+    };
+
+    const handleRemove = (id: string) => {
+        dispatch(removePledge(id));
+    };
+
+    const handleEdit = (id: string, type: string, description: string) => {
+        setEditingId(id);
+        setEditType(type);
+        setEditDescription(description);
+    };
+
+    const handleSaveEdit = () => {
+        if (editingId && editDescription.trim()) {
+            dispatch(updatePledge({
+                id: editingId,
+                type: editType.trim(),
+                description: editDescription.trim()
+            }));
+            setEditingId(null);
+            setEditType('');
+            setEditDescription('');
+        }
+    };
+
+    const handleCancelEdit = () => {
+        setEditingId(null);
+        setEditType('');
+        setEditDescription('');
     };
 
     return (
-        <Box>
-            <Title order={3} mb="md" style={{ borderBottom: '2px solid green', paddingBottom: '4px' }}>
-                Pledges ({allPledges.length})
-            </Title>
+        <Paper p="md" mb="md" withBorder>
+            <Text fw={700} size="sm" mb="sm">Pledges</Text>
 
-            {/* Intestazioni */}
-            <Group wrap="nowrap" gap="xs" mb="xs" style={{ width: '100%', paddingRight: '36px' }}>
-                <Text fw={700} style={{ width: '20%' }}>TYPE</Text>
-                <Text fw={700} style={{ flexGrow: 1 }}>NOTES</Text>
+            <Group wrap="nowrap" gap="xs" mb="xs">
+                <Text fw={700} size="xs" style={{ width: '25%' }}>TYPE</Text>
+                <Text fw={700} size="xs" style={{ flex: 1 }}>DESCRIPTION</Text>
             </Group>
 
-            {/* Lista dei Pegni Attivi */}
             <Stack gap="xs">
-                {allPledges.length === 0 ? (
-                    <Text c="dimmed" size="sm">Nessun Pegno Attivo (Pledge Point: 0)</Text>
-                ) : (
-                    allPledges.map(pledge => (
-                        <PledgeRow key={pledge.id} pledge={pledge} />
-                    ))
-                )}
+                {pledges.map((pledge) => (
+                    <Group key={pledge.id} wrap="nowrap" gap="xs">
+                        {editingId === pledge.id ? (
+                            <>
+                                <TextInput
+                                    value={editType}
+                                    onChange={(e) => setEditType(e.target.value)}
+                                    placeholder="Type"
+                                    style={{ width: '25%' }}
+                                    size="sm"
+                                />
+                                <TextInput
+                                    value={editDescription}
+                                    onChange={(e) => setEditDescription(e.target.value)}
+                                    style={{ flex: 1 }}
+                                    size="sm"
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter') handleSaveEdit();
+                                        if (e.key === 'Escape') handleCancelEdit();
+                                    }}
+                                />
+                                <Group gap="xs">
+                                    <Button size="xs" onClick={handleSaveEdit}>Save</Button>
+                                    <Button size="xs" variant="subtle" onClick={handleCancelEdit}>Cancel</Button>
+                                </Group>
+                            </>
+                        ) : (
+                            <>
+                                <Text size="sm" style={{ width: '25%' }}>{pledge.type}</Text>
+                                <Text size="sm" style={{ flex: 1 }}>{pledge.description}</Text>
+                                <Group gap="xs">
+                                    <ActionIcon
+                                        size="sm"
+                                        variant="subtle"
+                                        onClick={() => handleEdit(pledge.id, pledge.type, pledge.description)}
+                                    >
+                                        <IconEdit size={16} />
+                                    </ActionIcon>
+                                    <ActionIcon
+                                        size="sm"
+                                        variant="subtle"
+                                        color="red"
+                                        onClick={() => handleRemove(pledge.id)}
+                                    >
+                                        <IconTrash size={16} />
+                                    </ActionIcon>
+                                </Group>
+                            </>
+                        )}
+                    </Group>
+                ))}
             </Stack>
 
-            {/* Campo di Aggiunta Rapida (sotto la lista) */}
-            <Flex gap="xs" mt="md" align="center" style={{ width: '100%' }}>
+            <Group mt="md" wrap="nowrap" gap="xs">
                 <TextInput
+                    placeholder="Type..."
                     value={newType}
-                    onChange={(e) => setNewType(e.currentTarget.value)}
-                    placeholder="Tipo (es. Favor)"
-                    style={{ width: '20%' }}
+                    onChange={(e) => setNewType(e.target.value)}
+                    style={{ width: '25%' }}
                     size="sm"
                 />
                 <TextInput
+                    placeholder="Add pledge description..."
                     value={newDescription}
-                    onChange={(e) => setNewDescription(e.currentTarget.value)}
-                    placeholder="Aggiungi un nuovo Pledge / Dettagli del Patto..."
-                    style={{ flexGrow: 1 }}
-                    size="sm"
+                    onChange={(e) => setNewDescription(e.target.value)}
                     onKeyDown={(e) => {
-                        if (e.key === 'Enter') handleAddPledge();
+                        if (e.key === 'Enter') handleAdd();
                     }}
+                    style={{ flex: 1 }}
+                    size="sm"
                 />
-                <ActionIcon
-                    size="lg"
-                    color="green"
-                    variant="filled"
-                    onClick={handleAddPledge}
-                    title="Aggiungi Pledge"
-                >
-                    <IconPlus size={24} />
+                <ActionIcon onClick={handleAdd} variant="filled" size="lg">
+                    <IconPlus size={18} />
                 </ActionIcon>
-            </Flex>
-        </Box>
+            </Group>
+        </Paper>
     );
 };

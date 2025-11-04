@@ -14,10 +14,10 @@ export const SkillsSection = () => {
 
 
   return (
-      <Grid>
+      <Grid mb="md">
         {Object.entries(SKILL_GROUPS).map(([groupKey, skills]) => {
           return (
-            <Grid.Col key={groupKey} span={{ base: 12, md: 4 }}>
+            <Grid.Col key={groupKey} span={{ base: 12, md: 4 }} pb={0}>
               <SkillsGroup
                 groupKey={groupKey}
                 skills={skills}

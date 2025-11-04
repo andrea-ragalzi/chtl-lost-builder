@@ -1,18 +1,21 @@
-import { Stack } from '@mantine/core';
-import { useAppSelector } from '../../../shared/hooks/hooks';
-import { ListSection } from './ListSection';
+import { Box } from '@mantine/core';
+import { useAppDispatch, useAppSelector } from '../../../shared/hooks/hooks';
+import { addTouchstone, removeTouchstone, updateTouchstone } from '../../../shared/stores/touchstonesSlice';
+import { SimpleList } from './SimpleList';
 
-export const TouchstoneSection = () => {
-    const narrative = useAppSelector((state) => state.character.narrative);
+export const TouchstonesSection = () => {
+    const dispatch = useAppDispatch();
+    const items = useAppSelector((state) => state.character.touchstones.list);
 
     return (
-        <Stack gap="md" mb="md">
-
-            <ListSection
+        <Box mb="md">
+            <SimpleList
                 title="Touchstones"
-                listKey="touchstones"
-                items={narrative.touchstones}
+                items={items}
+                onAdd={(text) => dispatch(addTouchstone(text))}
+                onRemove={(index) => dispatch(removeTouchstone(index))}
+                onUpdate={(index, text) => dispatch(updateTouchstone({ index, text }))}
             />
-        </Stack>
+        </Box>
     );
 };

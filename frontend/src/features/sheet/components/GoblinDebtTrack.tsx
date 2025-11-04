@@ -1,143 +1,163 @@
-import { Box, Title, Group, Text, ActionIcon, Stack, Checkbox, TextInput } from '@mantine/core';
-import { IconCirclePlus, IconTrash } from '@tabler/icons-react';
-// Assumi che i tuoi hooks includano la definizione corretta di RootState
-import { useAppSelector, useAppDispatch } from '../../../shared/hooks/hooks';
+import { Stack, TextInput, ActionIcon, Group, Paper, Text, Button, Checkbox } from '@mantine/core';
+import { IconPlus, IconTrash, IconEdit } from '@tabler/icons-react';
+import { useState } from 'react';
+import { useAppDispatch, useAppSelector } from '../../../shared/hooks/hooks';
 import {
     addDebt,
     removeDebt,
     toggleDebtRepaid,
     updateDebtDescription,
-    type GoblinDebtItem
 } from '../../../shared/stores/goblinDebtSlice';
-import React from 'react';
-import type { RootState } from '../../../app/store';
 import { loseClarity } from '../../../shared/stores/claritySlice';
+import type { RootState } from '../../../app/store';
 
-// Componente per una singola riga di Debito (Non richiede modifiche)
-const DebtRow: React.FC<{ debt: GoblinDebtItem }> = ({ debt }) => {
+export const GoblinDebtTrack = () => {
     const dispatch = useAppDispatch();
     const allDebts = useAppSelector((state: RootState) => state.character.goblinDebt.debts);
+    const [newDebt, setNewDebt] = useState('');
+    const [editingId, setEditingId] = useState<string | null>(null);
+    const [editText, setEditText] = useState('');
 
-    const handleRemove = () => {
-        // Regola 1: Non si può archiviare un debito che non è ancora ripagato.
-        if (!debt.isRepaid) {
-             alert("Non puoi archiviare un debito ATTTIVO. Segnalo come 'Ripagato' (spunta) prima di rimuoverlo.");
-             return;
+    const activeDebtsCount = allDebts.filter(d => !d.isRepaid).length;
+
+    const handleAdd = () => {
+        if (newDebt.trim()) {
+            dispatch(addDebt(newDebt.trim()));
+            setNewDebt('');
+        }
+    };
+
+    const handleRemove = (id: string, isRepaid: boolean) => {
+        if (!isRepaid) {
+            alert("Non puoi archiviare un debito ATTIVO. Segnalo come 'Ripagato' (spunta) prima di rimuoverlo.");
+            return;
         }
 
         if (window.confirm("Sei sicuro di voler archiviare questo Debito?")) {
-            
-            // 1. Calcola i debiti attivi che *rimarrebbero*
-            // Filtriamo quelli NON ripagati E che NON sono quello corrente.
-            const remainingActiveDebts = allDebts.filter(d => !d.isRepaid && d.id !== debt.id);
+            const remainingActiveDebts = allDebts.filter(d => !d.isRepaid && d.id !== id);
 
-            // 2. LOGICA CHIAREZZA: Se questo era l'ultimo debito attivo...
             if (remainingActiveDebts.length === 0) {
                 dispatch(loseClarity());
                 console.warn("Clarity lost due to final Goblin Debt repayment.");
             }
-            
-            // 3. Rimuovi il debito (Archiviazione)
-            dispatch(removeDebt(debt.id));
+
+            dispatch(removeDebt(id));
         }
     };
 
-    const handleToggle = () => {
-        dispatch(toggleDebtRepaid(debt.id));
-        // Aggiungere qui la logica di perdita di Chiarezza se necessario.
+    const handleToggle = (id: string) => {
+        dispatch(toggleDebtRepaid(id));
     };
 
-    const handleDescriptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        dispatch(updateDebtDescription({ id: debt.id, description: e.target.value }));
+    const handleEdit = (id: string, description: string) => {
+        setEditingId(id);
+        setEditText(description);
     };
 
-    return (
-        <Group wrap="nowrap" gap="xs" style={{ width: '100%', alignItems: 'center' }}>
-            {/* Casella di Spunta (indica se è stato ripagato) */}
-            <Checkbox
-                checked={debt.isRepaid}
-                onChange={handleToggle}
-                color="red"
-                size="md"
-                aria-label="Mark as Repaid"
-            />
+    const handleSaveEdit = () => {
+        if (editingId && editText.trim()) {
+            dispatch(updateDebtDescription({ id: editingId, description: editText.trim() }));
+            setEditingId(null);
+            setEditText('');
+        }
+    };
 
-            {/* Campo di testo per la Descrizione */}
-            <TextInput
-                value={debt.description}
-                onChange={handleDescriptionChange}
-                placeholder="Details of the obligation..."
-                style={{ flexGrow: 1 }}
-                size="sm"
-                variant="filled"
-                // Aggiungi stile per mostrare lo stato "Ripagato"
-                styles={{ input: { textDecoration: debt.isRepaid ? 'line-through' : 'none', opacity: debt.isRepaid ? 0.6 : 1 } }}
-            />
-
-            {/* Pulsante Rimuovi (Archiviazione) */}
-            <ActionIcon
-                size="sm"
-                variant="subtle"
-                color="red"
-                onClick={handleRemove}
-                title="Permanently remove debt (GM use)"
-            >
-                <IconTrash size={16} />
-            </ActionIcon>
-        </Group>
-    );
-};
-
-
-export const GoblinDebtTrack = () => {
-    const dispatch = useAppDispatch();
-
-    // --- CORREZIONE QUI ---
-    // Usiamo RootState e assumiamo il percorso corretto per i Debiti Goblin
-    const allDebts = useAppSelector((state: RootState) => state.character.goblinDebt.debts);
-    // -----------------------
-
-    // Il tipo di 'allDebts' ora è GoblinDebtItem[], quindi possiamo mappare e filtrare con sicurezza.
-    const activeDebtsCount = allDebts.filter(d => !d.isRepaid).length;
-
-    const handleAddDebt = () => {
-        dispatch(addDebt()); // Aggiunge un debito con testo di default
+    const handleCancelEdit = () => {
+        setEditingId(null);
+        setEditText('');
     };
 
     return (
-        <Box>
-            <Title order={3} mb="md">Goblin Debts</Title>
-
+        <Paper p="md" mb="md" withBorder>
             <Group justify="space-between" mb="sm">
-                <Text fw={700}>Active Debts: {activeDebtsCount}</Text>
-
-                {/* Pulsante per aggiungere Debito manualmente */}
-                <ActionIcon
-                    size="lg"
-                    color="red"
-                    variant="light"
-                    onClick={handleAddDebt}
-                    title="Add new Goblin Debt manually"
-                >
-                    <IconCirclePlus size={24} />
-                </ActionIcon>
+                <Text fw={700} size="sm">Goblin Debts</Text>
+                <Text size="sm" c="dimmed" fw={500}>Active: {activeDebtsCount}</Text>
             </Group>
 
-            {/* Lista dei Debiti */}
             <Stack gap="xs">
                 {allDebts.length === 0 ? (
                     <Text c="dimmed" size="sm">No Goblin Debts currently owed.</Text>
                 ) : (
-                    allDebts.map(debt => (
-                        <DebtRow key={debt.id} debt={debt} />
+                    allDebts.map((debt) => (
+                        <Group key={debt.id} wrap="nowrap" justify="space-between">
+                            {editingId === debt.id ? (
+                                <>
+                                    <TextInput
+                                        value={editText}
+                                        onChange={(e) => setEditText(e.target.value)}
+                                        style={{ flex: 1 }}
+                                        size="sm"
+                                        onKeyDown={(e) => {
+                                            if (e.key === 'Enter') handleSaveEdit();
+                                            if (e.key === 'Escape') handleCancelEdit();
+                                        }}
+                                    />
+                                    <Group gap="xs">
+                                        <Button size="xs" onClick={handleSaveEdit}>Save</Button>
+                                        <Button size="xs" variant="subtle" onClick={handleCancelEdit}>Cancel</Button>
+                                    </Group>
+                                </>
+                            ) : (
+                                <>
+                                    <Group gap="xs" style={{ flex: 1 }} wrap="nowrap">
+                                        <Checkbox
+                                            checked={debt.isRepaid}
+                                            onChange={() => handleToggle(debt.id)}
+                                        />
+                                        <Text
+                                            size="sm"
+                                            style={{
+                                                flex: 1,
+                                                textDecoration: debt.isRepaid ? 'line-through' : 'none',
+                                                opacity: debt.isRepaid ? 0.6 : 1
+                                            }}
+                                        >
+                                            {debt.description}
+                                        </Text>
+                                    </Group>
+                                    <Group gap="xs">
+                                        <ActionIcon
+                                            size="sm"
+                                            variant="subtle"
+                                            onClick={() => handleEdit(debt.id, debt.description)}
+                                        >
+                                            <IconEdit size={16} />
+                                        </ActionIcon>
+                                        <ActionIcon
+                                            size="sm"
+                                            variant="subtle"
+                                            color="red"
+                                            onClick={() => handleRemove(debt.id, debt.isRepaid)}
+                                        >
+                                            <IconTrash size={16} />
+                                        </ActionIcon>
+                                    </Group>
+                                </>
+                            )}
+                        </Group>
                     ))
                 )}
             </Stack>
 
-            {/* Promemoria Regola Chiarezza */}
-            <Text size="xs" c="red" mt="md" style={{ fontStyle: 'italic' }}>
-                *REMINDER: If active debts count drops from 1 to 0, the character loses 1 point of Clarity.
+            <Group mt="md" wrap="nowrap">
+                <TextInput
+                    placeholder="Add goblin debt..."
+                    value={newDebt}
+                    onChange={(e) => setNewDebt(e.target.value)}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter') handleAdd();
+                    }}
+                    style={{ flex: 1 }}
+                    size="sm"
+                />
+                <ActionIcon onClick={handleAdd} variant="filled" size="lg">
+                    <IconPlus size={18} />
+                </ActionIcon>
+            </Group>
+
+            <Text size="xs" c="dimmed" mt="md" style={{ fontStyle: 'italic' }}>
+                *Reminder: If active debts drop from 1 to 0, the character loses 1 point of Clarity.
             </Text>
-        </Box>
+        </Paper>
     );
 };

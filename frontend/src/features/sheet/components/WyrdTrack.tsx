@@ -1,4 +1,4 @@
-import { Text } from '@mantine/core';
+import { Box, Group, Paper, Text } from '@mantine/core';
 import { useAppSelector, useAppDispatch } from '../../../shared/hooks/hooks';
 import { DotRating } from './DotRating';
 import { setWyrd } from '../../../shared/stores/wyrdSlice';
@@ -13,9 +13,17 @@ export const WyrdTrack = () => {
     };
 
     return (
-        <>
-            <Text>Wyrd:</Text>
-            <DotRating rating={wyrd} max={maxWyrd} onChange={handleWyrdChange} />
-        </>
+        <Paper mb="md" p="xs" withBorder style={{ overflow: 'hidden' }}>
+            <Text fw={500} mb="xs" size="sm">Wyrd</Text>
+            <Box style={{ maxWidth: '100%' }}>
+                <Group align="start">
+                    <DotRating
+                        rating={wyrd}
+                        max={maxWyrd}
+                        onChange={handleWyrdChange}
+                    />
+                </Group>
+            </Box>
+        </Paper>
     );
 };

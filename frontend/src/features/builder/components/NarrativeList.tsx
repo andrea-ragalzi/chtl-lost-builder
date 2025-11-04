@@ -1,7 +1,9 @@
 import { useState, useMemo } from 'react';
 import { Box, Title, Text, Stack, TextInput, Group, ActionIcon } from '@mantine/core';
 import { useAppSelector, useAppDispatch } from '../../../shared/hooks/hooks';
-import { addItem, removeItem, updateItem } from '../../../shared/stores/narrativeSlice';
+import { addFavoredRegalia, removeFavoredRegalia, updateFavoredRegalia } from '../../../shared/stores/favoredRegaliaSlice';
+import { addFrailty, removeFrailty, updateFrailty } from '../../../shared/stores/frailtiesSlice';
+import { addTouchstone, removeTouchstone, updateTouchstone } from '../../../shared/stores/touchstonesSlice';
 import { IconPlus, IconTrash } from '@tabler/icons-react';
 
 type ListType = 'standard' | 'numbered';
@@ -18,7 +20,17 @@ interface NarrativeListProps {
 export const NarrativeList = ({ title, listKey, isBuilderMode, listType, maxItems }: NarrativeListProps) => {
     const dispatch = useAppDispatch();
 
-    const list: string[] = useAppSelector((state) => state.character.narrative[listKey]);
+    const list: string[] = useAppSelector((state) => {
+        switch (listKey) {
+            case 'favoredRegalia':
+                return state.character.favoredRegalia.list;
+            case 'frailties':
+                return state.character.frailties.list;
+            case 'touchstones':
+                return state.character.touchstones.list;
+        }
+    });
+
     const [newItemText, setNewItemText] = useState('');
 
     // Pre-calculate state flags
@@ -26,20 +38,49 @@ export const NarrativeList = ({ title, listKey, isBuilderMode, listType, maxItem
         return !!newItemText && (!maxItems || list.length < maxItems);
     }, [newItemText, maxItems, list.length]);
 
-
     const handleAddItem = () => {
         if (canAddItem) {
-            dispatch(addItem({ list: listKey, text: newItemText }));
+            switch (listKey) {
+                case 'favoredRegalia':
+                    dispatch(addFavoredRegalia(newItemText));
+                    break;
+                case 'frailties':
+                    dispatch(addFrailty(newItemText));
+                    break;
+                case 'touchstones':
+                    dispatch(addTouchstone(newItemText));
+                    break;
+            }
             setNewItemText('');
         }
     };
 
     const handleRemoveItem = (index: number) => {
-        dispatch(removeItem({ list: listKey, index }));
+        switch (listKey) {
+            case 'favoredRegalia':
+                dispatch(removeFavoredRegalia(index));
+                break;
+            case 'frailties':
+                dispatch(removeFrailty(index));
+                break;
+            case 'touchstones':
+                dispatch(removeTouchstone(index));
+                break;
+        }
     };
 
     const handleUpdateItem = (index: number, text: string) => {
-        dispatch(updateItem({ list: listKey, index, text }));
+        switch (listKey) {
+            case 'favoredRegalia':
+                dispatch(updateFavoredRegalia({ index, text }));
+                break;
+            case 'frailties':
+                dispatch(updateFrailty({ index, text }));
+                break;
+            case 'touchstones':
+                dispatch(updateTouchstone({ index, text }));
+                break;
+        }
     };
 
     return (
@@ -80,11 +121,14 @@ export const NarrativeList = ({ title, listKey, isBuilderMode, listType, maxItem
                     <Text c="dimmed" size="sm">No {title} currently set.</Text>
                 )}
                 {isBuilderMode && (
-                    <Group  gap="sm">
+                    <Group gap="sm">
                         <TextInput
                             placeholder={`Add new ${listKey.toLowerCase()}`}
                             value={newItemText}
                             onChange={(e) => setNewItemText(e.target.value)}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter') handleAddItem();
+                            }}
                             style={{ flex: 1 }}
                             disabled={!!(maxItems && list.length >= maxItems)}
                         />

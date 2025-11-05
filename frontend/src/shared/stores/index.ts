@@ -26,6 +26,7 @@ import frailtiesSlice from './frailtiesSlice';
 import touchstonesSlice from './touchstonesSlice';
 import aspirationsSlice from './aspirationsSlice';
 import experienceSlice from './experienceSlice';
+import profileSlice from './profileSlice';
 
 const characterReducer = combineReducers({
     characterDetails: characterDetailsSlice,
@@ -54,7 +55,8 @@ const characterReducer = combineReducers({
     frailties: frailtiesSlice,
     touchstones: touchstonesSlice,
     aspirations: aspirationsSlice,
-    experience: experienceSlice
+    experience: experienceSlice,
+    profile: profileSlice
 });
 
 export default characterReducer;

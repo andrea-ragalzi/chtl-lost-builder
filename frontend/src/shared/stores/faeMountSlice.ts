@@ -3,6 +3,7 @@ import type { ListItem } from '../types/listItem';
 import { generateId } from '../utils';
 
 export interface FaeMountItem extends ListItem {
+    name: string;
     description: string;
 }
 

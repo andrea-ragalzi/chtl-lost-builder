@@ -1,4 +1,4 @@
-import { Stack, TextInput, ActionIcon, Group, Paper, Text, Button, Badge, Select } from '@mantine/core';
+import { Stack, TextInput, ActionIcon, Group, Text, Button, Badge, Select, Fieldset } from '@mantine/core';
 import { IconPlus, IconTrash, IconEdit } from '@tabler/icons-react';
 import { useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../shared/hooks/hooks';
@@ -66,9 +66,7 @@ export const AspirationsTrack = () => {
     };
 
     return (
-        <Paper p="md" mb="md" withBorder>
-            <Text fw={700} size="sm" mb="sm">Aspirations</Text>
-
+        <Fieldset legend="Aspirations" mb="md" style={{ overflow: 'hidden' }}>
             <Stack gap="xs">
                 {aspirations.length === 0 ? (
                     <Text c="dimmed" size="sm">No aspirations set.</Text>
@@ -167,6 +165,6 @@ export const AspirationsTrack = () => {
                     <IconPlus size={18} />
                 </ActionIcon>
             </Group>
-        </Paper>
+        </Fieldset>
     );
 };

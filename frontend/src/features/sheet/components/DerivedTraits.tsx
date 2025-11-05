@@ -1,4 +1,4 @@
-import { Grid, Text, Box, Paper } from '@mantine/core';
+import { Grid, Box, Fieldset } from '@mantine/core';
 import { useAppSelector } from '../../../shared/hooks/hooks';
 import { HealthTrack } from './HealthTrack';
 import { WillpowerTrack } from './WillpowerTrack';
@@ -15,36 +15,32 @@ export const DerivedTraits = () => {
         <Box w="100%" mb="md">
             <Grid gutter="xs">
                 <Grid.Col span={{ base: 6, md: 3 }} py={0}>
-                    <Paper p="xs" withBorder style={{ overflow: 'hidden' }}>
-                        <Text fw={500} mb="xs" size="sm">Health</Text>
+                    <Fieldset legend="Health"  style={{ overflow: 'hidden' }}>
                         <Box pb={5} style={{ maxWidth: '100%' }}>
                             <HealthTrack health={health} />
                         </Box>
-                    </Paper>
+                    </Fieldset>
                 </Grid.Col>
                 <Grid.Col span={{ base: 6, md: 3 }} py={0}>
-                    <Paper p="xs" withBorder style={{ overflow: 'hidden' }}>
-                        <Text fw={500} mb="xs" size="sm">Willpower</Text>
+                    <Fieldset legend="Willpower" style={{ overflow: 'hidden' }}>
                         <Box style={{ maxWidth: '100%' }}>
                             <WillpowerTrack />
                         </Box>
-                    </Paper>
+                    </Fieldset>
                 </Grid.Col>
                 <Grid.Col span={{ base: 6, md: 3 }} py={0}>
-                    <Paper p="xs" withBorder style={{ overflow: 'hidden' }}>
-                        <Text fw={500} mb="xs" size="sm">Glamour</Text>
+                    <Fieldset legend="Glamour" style={{ overflow: 'hidden' }}>
                         <Box style={{ maxWidth: '100%' }}>
                             <GlamourTrack />
                         </Box>
-                    </Paper>
+                    </Fieldset>
                 </Grid.Col>
                 <Grid.Col span={{ base: 6, md: 3 }} py={0}>
-                    <Paper p="xs" withBorder style={{ overflow: 'hidden' }}>
-                        <Text fw={500} mb="xs" size="sm">Clarity</Text>
+                    <Fieldset legend="Clarity" style={{ overflow: 'hidden' }}>
                         <Box style={{ maxWidth: '100%' }}>
                             <ClarityTrack />
                         </Box>
-                    </Paper>
+                    </Fieldset>
                 </Grid.Col>
             </Grid>
         </Box>

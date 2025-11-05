@@ -1,4 +1,4 @@
-import { Stack, TextInput, ActionIcon, Group, Paper, Text, Button, Checkbox } from '@mantine/core';
+import { Stack, TextInput, ActionIcon, Group, Text, Button, Checkbox, Fieldset } from '@mantine/core';
 import { IconPlus, IconTrash, IconEdit } from '@tabler/icons-react';
 import { useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../shared/hooks/hooks';
@@ -45,9 +45,7 @@ export const ConditionsTrack = () => {
     };
 
     return (
-        <Paper p="md" mb="md" withBorder>
-            <Text fw={700} size="sm" mb="sm">Conditions</Text>
-
+        <Fieldset legend="Conditions" mb="md" style={{ overflow: 'hidden' }}>
             <Stack gap="xs">
                 {conditions.map((condition) => (
                     <Group key={condition.id} wrap="nowrap" justify="space-between">
@@ -124,6 +122,6 @@ export const ConditionsTrack = () => {
                     <IconPlus size={18} />
                 </ActionIcon>
             </Group>
-        </Paper>
+        </Fieldset>
     );
 };

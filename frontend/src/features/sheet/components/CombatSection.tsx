@@ -1,4 +1,4 @@
-import { Box, Title, Text, Table, Stack, Grid, Paper } from '@mantine/core';
+import { Box, Title, Text, Table, Stack, Grid, Fieldset } from '@mantine/core';
 import React from 'react';
 import { useAppSelector } from '../../../shared/hooks/hooks';
 import type { RootState } from '../../../app/store';
@@ -52,28 +52,35 @@ export const CombatSection: React.FC = () => {
 
     return (
         <Box>
-            <Box w="100%" mb="md">
+            <Box w="100%" >
                 <Grid gutter="xs">
-                    <Grid.Col span={{ base: 6, xs: 3 }} py={0}>
-                        <Paper p="xs" withBorder style={{ overflow: 'hidden' }}>
-                            <Text fw={500} mb="xs" size="sm">Initiative: {initiative}</Text>
-                        </Paper>
+                    <Grid.Col span={{ base: 3, xs: 3 }}>
+                        <Fieldset legend="Initiative" p={10}>
+                            <Text fw={500} size="sm" ta="center">
+                                {initiative}
+                            </Text>
+                        </Fieldset>
                     </Grid.Col>
-                    <Grid.Col span={{ base: 6, xs: 3 }} py={0}>
-                        <Paper p="xs" withBorder style={{ overflow: 'hidden' }}>
-                            <Text fw={500} mb="xs" size="sm">Speed: {speed}</Text>
-
-                        </Paper>
+                    <Grid.Col span={{ base: 3, xs: 3 }}>
+                        <Fieldset legend="Speed" p={10}>
+                            <Text fw={500} size="sm" ta="center">
+                                {speed}
+                            </Text>
+                        </Fieldset>
                     </Grid.Col>
-                    <Grid.Col span={{ base: 6, xs: 3 }} py={0}>
-                        <Paper p="xs" withBorder style={{ overflow: 'hidden' }}>
-                            <Text fw={500} mb="xs" size="sm">Defense: {defense}</Text>
-                        </Paper>
+                    <Grid.Col span={{ base: 3, xs: 3 }}>
+                        <Fieldset legend="Defense" mb="md" p={10}>
+                            <Text fw={500} size="sm" ta="center">
+                                {defense}
+                            </Text>
+                        </Fieldset>
                     </Grid.Col>
-                    <Grid.Col span={{ base: 6, xs: 3 }} py={0}>
-                        <Paper p="xs" withBorder style={{ overflow: 'hidden' }}>
-                            <Text fw={500} mb="xs" size="sm">Armor: {armor}</Text>
-                        </Paper>
+                    <Grid.Col span={{ base: 3, xs: 3 }}>
+                        <Fieldset legend="Armor" mb="md" p={10}>
+                            <Text fw={500} size="sm" ta="center">
+                                {armor}
+                            </Text>
+                        </Fieldset>
                     </Grid.Col>
                 </Grid>
             </Box>

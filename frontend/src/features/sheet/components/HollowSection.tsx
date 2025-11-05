@@ -1,4 +1,4 @@
-import { Fieldset, Group, Stack, Text, Paper } from '@mantine/core';
+import { Fieldset, Group, Stack, Text, Box, Badge } from '@mantine/core';
 import React from 'react';
 import { useAppSelector } from '../../../shared/hooks/hooks';
 import type { RootState } from '../../../app/store';
@@ -12,21 +12,20 @@ const HollowDisplayRow: React.FC<{ id: string }> = ({
     if (!hollow) return null;
 
     return (
-        <Paper p="sm" withBorder>
+        <Box>
             <Group justify="space-between" mb="xs">
                 <Group gap="md">
-                    <Text fw={700} size="sm">Size: {hollow.size}</Text>
-                    <Text fw={700} size="sm">Security: {hollow.security}</Text>
+                    <Text fw={700} size="sm">{hollow.size}</Text>
+                    <Badge>Security {hollow.security}</Badge>
                 </Group>
             </Group>
 
             {hollow.description && (
                 <Stack gap={4}>
-                    <Text size="xs" c="dimmed" fw={500}>Description:</Text>
                     <Text size="sm">{hollow.description}</Text>
                 </Stack>
             )}
-        </Paper>
+        </Box>
     );
 };
 
@@ -34,7 +33,8 @@ export const HollowSection: React.FC = () => {
     const hollows = useAppSelector((state: RootState) => state.character.hollows);
 
     return (
-        <Fieldset legend="Hollow">
+        <>
+        <Fieldset legend="Hollow" mb="md">
             <Stack gap="md">
                 {hollows.length === 0 ? (
                     <Text c="dimmed" size="sm">No hollow tracked. Add in the Builder.</Text>
@@ -42,11 +42,11 @@ export const HollowSection: React.FC = () => {
                     hollows.map(hollow => (
                         <HollowDisplayRow
                             key={hollow.id}
-                            id={hollow.id}
-                        />
+                            id={hollow.id} />
                     ))
                 )}
             </Stack>
         </Fieldset>
+        </>
     );
 };

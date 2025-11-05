@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Tabs, Box, rem, Button, Divider, Title, Text } from '@mantine/core';
+import { Tabs, Box, rem, Button, Divider, Title, Text, Card, Group, NumberInput, Select, Textarea, TextInput } from '@mantine/core';
 import { IconBolt, IconFeather, IconId, IconBackpack, IconBook } from '@tabler/icons-react';
 
 import { CharacterDetails } from "../features/sheet/components/CharacterDetails";
@@ -23,6 +23,7 @@ import { AspirationsTrack } from '../features/sheet/components/AspirationsTrack'
 import { ExperienceTrack } from '../features/sheet/components/ExperienceTrack';
 import { FrailtiesSection } from '../features/sheet/components/FrailtiesSection';
 import { FavoredRegaliaSection } from '../features/sheet/components/FavoredRegaliaSection';
+import { MortalDetailsSection } from '../features/sheet/components/MortalDetailsSection';
 
 const TAB_GROUPS = {
     BOARD: 'board',
@@ -72,28 +73,13 @@ const SheetPage = () => {
                         <ContractSection />
                         <BlessingCurseSection />
                         <HollowSection />
+                        <FaeMountSection />
                         <FrailtiesSection />
                         <FavoredRegaliaSection />
                     </Tabs.Panel>
 
                     <Tabs.Panel value={TAB_GROUPS.PROFILE} style={panelStyle}>
-                        <Title order={3} mb="md">Character Details & Concept</Title>
-
-                        <Divider my="md" label="Basic Character Information" labelPosition="center" />
-                        <CharacterDetails />
-
-                        <Divider my="md" label="Narrative Details & Notes" labelPosition="center" />
-                        <Text ml="md">Needle / Thread</Text>
-                        <Text ml="md">Background Notes</Text>
-
-                        <Button
-                            fullWidth
-                            size="lg"
-                            mt="xl"
-                            onClick={() => navigate('/')}
-                        >
-                            Back to Builder
-                        </Button>
+                        <MortalDetailsSection />
                     </Tabs.Panel>
 
                     <Tabs.Panel value={TAB_GROUPS.EQUIPMENT} style={panelStyle}>
@@ -101,7 +87,6 @@ const SheetPage = () => {
 
                         <Divider my="md" label="Permanent Advantages" labelPosition="center" />
                         <MeritsSection />
-                        <FaeMountSection />
                         <HollowSection />
 
                     </Tabs.Panel>

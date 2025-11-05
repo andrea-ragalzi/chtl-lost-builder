@@ -1,8 +1,7 @@
-import { Box, SimpleGrid } from '@mantine/core';
+import { Box, Fieldset, SimpleGrid, Text } from '@mantine/core';
 import { useAppSelector } from '../../../shared/hooks/hooks';
 import { seemingData } from '../../../shared/data/seemingData';
 import { kithData } from '../../../shared/data/kithData';
-import { SimpleList } from './SimpleList';
 
 export const BlessingCurseSection = () => {
     const selectedSeeming = useAppSelector((state) => state.character.seeming.selected);
@@ -15,20 +14,16 @@ export const BlessingCurseSection = () => {
     return (
         <Box mb="md">
             <SimpleGrid cols={{ base: 1, md: 3 }} spacing="md">
-                <SimpleList
-                    title="Seeming Blessing"
-                    items={selectedSeeming ? [seemingBlessing] : []}
-                />
+                <Fieldset legend="Seeming Blessing">
+                    <Text>{seemingBlessing}</Text>
+                </Fieldset>
+                <Fieldset legend="Seeming Curse">
+                    <Text>{seemingCurse}</Text>
+                </Fieldset>
+                <Fieldset legend="Kith Blessing">
+                    <Text>{kithBlessing}</Text>
+                </Fieldset>
 
-                <SimpleList
-                    title="Seeming Curse"
-                    items={selectedSeeming ? [seemingCurse] : []}
-                />
-
-                <SimpleList
-                    title="Kith Blessing"
-                    items={selectedKith ? [kithBlessing] : []}
-                />
             </SimpleGrid>
         </Box>
     );

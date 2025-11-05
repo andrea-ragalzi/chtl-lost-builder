@@ -12,7 +12,6 @@ export const ClarityTrack = () => {
     };
 
     return (
-
         <DotRating rating={clarity} max={maxClarity} wrap={true} onChange={handleClarityChange} />
     );
 };

@@ -1,4 +1,4 @@
-import { Box, Group, Paper, Text } from '@mantine/core';
+import { Box, Fieldset, Group } from '@mantine/core';
 import { useAppSelector, useAppDispatch } from '../../../shared/hooks/hooks';
 import { DotRating } from './DotRating';
 import { setWyrd } from '../../../shared/stores/wyrdSlice';
@@ -13,8 +13,7 @@ export const WyrdTrack = () => {
     };
 
     return (
-        <Paper mb="md" p="xs" withBorder style={{ overflow: 'hidden' }}>
-            <Text fw={500} mb="xs" size="sm">Wyrd</Text>
+        <Fieldset legend="Wyrd" style={{ overflow: 'hidden' }} mb="md">
             <Box style={{ maxWidth: '100%' }}>
                 <Group align="start">
                     <DotRating
@@ -24,6 +23,6 @@ export const WyrdTrack = () => {
                     />
                 </Group>
             </Box>
-        </Paper>
+        </Fieldset>
     );
 };

@@ -1,4 +1,4 @@
-import { Stack, Text, Paper, TextInput, ActionIcon, Button, Textarea, Group } from '@mantine/core';
+import { Stack, Text, TextInput, ActionIcon, Button, Textarea, Group, Fieldset, Box } from '@mantine/core';
 import { IconEdit } from '@tabler/icons-react';
 import { useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../shared/hooks/hooks';
@@ -51,15 +51,14 @@ export const MantleSection = () => {
     };
 
     return (
-        <Paper p="md" withBorder>
-            <Text fw={700} size="sm" mb="sm">Mantles</Text>
+        <Fieldset legend="Mantle" mb="md">
 
             <Stack gap="md">
                 {mantles.length === 0 ? (
                     <Text c="dimmed" size="sm">No mantles added.</Text>
                 ) : (
                     mantles.map((mantle) => (
-                        <Paper key={mantle.id} p="sm" withBorder>
+                        <Box key={mantle.id} >
                             {editingId === mantle.id ? (
                                 <Stack gap="xs">
                                     <Group wrap="nowrap" gap="xs">
@@ -127,10 +126,10 @@ export const MantleSection = () => {
                                     )}
                                 </>
                             )}
-                        </Paper>
+                        </Box>
                     ))
                 )}
             </Stack>
-        </Paper>
+        </Fieldset>
     );
 };

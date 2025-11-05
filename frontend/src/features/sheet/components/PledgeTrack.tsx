@@ -1,4 +1,4 @@
-import { Stack, TextInput, ActionIcon, Group, Paper, Text, Button } from '@mantine/core';
+import { Stack, TextInput, ActionIcon, Group, Text, Button, Fieldset } from '@mantine/core';
 import { IconPlus, IconTrash, IconEdit } from '@tabler/icons-react';
 import { useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../shared/hooks/hooks';
@@ -54,9 +54,7 @@ export const PledgeTrack = () => {
     };
 
     return (
-        <Paper p="md" mb="md" withBorder>
-            <Text fw={700} size="sm" mb="sm">Pledges</Text>
-
+        <Fieldset legend="Pledges" mb="md" style={{ overflow: 'hidden' }}>
             <Group wrap="nowrap" gap="xs" mb="xs">
                 <Text fw={700} size="xs" style={{ width: '25%' }}>TYPE</Text>
                 <Text fw={700} size="xs" style={{ flex: 1 }}>DESCRIPTION</Text>
@@ -138,6 +136,6 @@ export const PledgeTrack = () => {
                     <IconPlus size={18} />
                 </ActionIcon>
             </Group>
-        </Paper>
+        </Fieldset>
     );
 };

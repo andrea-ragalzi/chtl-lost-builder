@@ -1,4 +1,4 @@
-import { Group, Paper, Text, ActionIcon, Box } from '@mantine/core';
+import { Group, Text, ActionIcon, Box, Fieldset } from '@mantine/core';
 import { IconPlus, IconMinus } from '@tabler/icons-react';
 import { useRef } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../shared/hooks/hooks';
@@ -29,15 +29,19 @@ export const ExperienceTrack = () => {
     };
 
     return (
-        <Paper p="md" mb="md" withBorder>
-            <Group align="flex-start" wrap="nowrap" gap="xl">
-                {/* Beats Section */}
-                <Box style={{ flex: 1 }}>
-                    <Group justify="space-between" mb="xs">
-                        <Text fw={700} size="sm">Beats</Text>
-                        <Text size="xs" c="dimmed">{beats} / 5</Text>
-                    </Group>
-
+        <Box mb="md">
+            <Group align="flex-start" wrap="nowrap" gap={0}>
+                <Fieldset
+                    legend="Beats"
+                    style={{
+                        flex: 1,
+                        borderRight: 'none',
+                        borderTopRightRadius: 0,
+                        borderBottomRightRadius: 0,
+                        margin: 0,
+                        minHeight: '110px'
+                    }}
+                >
                     <DotRating
                         rating={beats}
                         max={5}
@@ -47,13 +51,20 @@ export const ExperienceTrack = () => {
                     <Text size="xs" c="dimmed" mt="xs" style={{ fontStyle: 'italic' }}>
                         *5 Beats = 1 Experience
                     </Text>
-                </Box>
+                </Fieldset>
 
-                {/* Experiences Section */}
-                <Box style={{ flex: 1 }}>
-                    <Text fw={700} size="sm" mb="xs">Experience</Text>
-
-                    <Group gap="xs" align="center">
+                <Fieldset
+                    legend="Experience"
+                    style={{
+                        flex: 1,
+                        borderLeft: 'none',
+                        borderTopLeftRadius: 0,
+                        borderBottomLeftRadius: 0,
+                        margin: 0,
+                        minHeight: '110px'
+                    }}
+                >
+                    <Group gap="xs" align="center" wrap="nowrap">
                         <ActionIcon
                             size="lg"
                             variant="filled"
@@ -68,9 +79,13 @@ export const ExperienceTrack = () => {
                             style={{
                                 flex: 1,
                                 textAlign: 'center',
-                                padding: '5px',
-                                border: '1px solid var(--mantine-color-gray-7)',
+                                padding: '8px',
+                                border: '1px solid var(--mantine-color-gray-4)',
                                 borderRadius: 'var(--mantine-radius-sm)',
+                                minHeight: '36px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center'
                             }}
                         >
                             <Text size="md" fw={500}>{experiences}</Text>
@@ -85,9 +100,8 @@ export const ExperienceTrack = () => {
                             <IconPlus size={18} />
                         </ActionIcon>
                     </Group>
-
-                </Box>
+                </Fieldset>
             </Group>
-        </Paper>
+        </Box>
     );
 };

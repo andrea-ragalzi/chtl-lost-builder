@@ -1,4 +1,4 @@
-import { Stack, TextInput, ActionIcon, Group, Paper, Text, Button, Checkbox } from '@mantine/core';
+import { Stack, TextInput, ActionIcon, Group, Text, Button, Checkbox, Fieldset } from '@mantine/core';
 import { IconPlus, IconTrash, IconEdit } from '@tabler/icons-react';
 import { useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../shared/hooks/hooks';
@@ -17,8 +17,6 @@ export const GoblinDebtTrack = () => {
     const [newDebt, setNewDebt] = useState('');
     const [editingId, setEditingId] = useState<string | null>(null);
     const [editText, setEditText] = useState('');
-
-    const activeDebtsCount = allDebts.filter(d => !d.isRepaid).length;
 
     const handleAdd = () => {
         if (newDebt.trim()) {
@@ -68,11 +66,8 @@ export const GoblinDebtTrack = () => {
     };
 
     return (
-        <Paper p="md" mb="md" withBorder>
-            <Group justify="space-between" mb="sm">
-                <Text fw={700} size="sm">Goblin Debts</Text>
-                <Text size="sm" c="dimmed" fw={500}>Active: {activeDebtsCount}</Text>
-            </Group>
+        <Fieldset legend="Goblin Debts" mb="md" style={{ overflow: 'hidden' }}>
+
 
             <Stack gap="xs">
                 {allDebts.length === 0 ? (
@@ -158,6 +153,6 @@ export const GoblinDebtTrack = () => {
             <Text size="xs" c="dimmed" mt="md" style={{ fontStyle: 'italic' }}>
                 *Reminder: If active debts drop from 1 to 0, the character loses 1 point of Clarity.
             </Text>
-        </Paper>
+        </Fieldset>
     );
 };

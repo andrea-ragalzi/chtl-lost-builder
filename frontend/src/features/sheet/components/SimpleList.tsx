@@ -1,4 +1,4 @@
-import { Stack, TextInput, ActionIcon, Group, Paper, Text, Button } from '@mantine/core';
+import { Stack, TextInput, ActionIcon, Group, Text, Button, Fieldset } from '@mantine/core';
 import { IconPlus, IconTrash, IconEdit } from '@tabler/icons-react';
 import { useState } from 'react';
 
@@ -43,9 +43,7 @@ export const SimpleList = ({ title, items, onAdd, onRemove, onUpdate }: SimpleLi
     const isReadOnly = !onAdd && !onRemove && !onUpdate;
 
     return (
-        <Paper p="md" withBorder>
-            <Text fw={700} size="sm" mb="sm">{title}</Text>
-
+        <Fieldset legend={title} mb="md">
             <Stack gap="xs">
                 {items.length === 0 ? (
                     <Text c="dimmed" size="sm">No items.</Text>
@@ -119,6 +117,6 @@ export const SimpleList = ({ title, items, onAdd, onRemove, onUpdate }: SimpleLi
                     </ActionIcon>
                 </Group>
             )}
-        </Paper>
+        </Fieldset>
     );
 };
